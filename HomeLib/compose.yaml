@@ -1,0 +1,28 @@
+﻿services:
+  homelib:
+    build:
+      context: .
+      dockerfile: HomeLib.API/Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: library_web_api
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Database=HomeLibDataBase;Username=postgres;Password=1234
+  
+  db:
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: HomeLibDataBase
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    container_name: db_postgresql_library
+
+volumes:
+  db_data:
