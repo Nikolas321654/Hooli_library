@@ -19,8 +19,4 @@
       <ProjectReference Include="..\HomeLib.Core\HomeLib.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
 </Project>

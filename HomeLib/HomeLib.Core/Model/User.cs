@@ -1,6 +1,6 @@
-﻿    namespace HomeLib.Infrastructure.Model;
+﻿namespace HomeLib.Core;
 
-    public class UserEntity
+    public class User
     {
         public Guid Id { get; set; }
         public string Login { get; set; } = string.Empty;
@@ -9,5 +9,5 @@
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         
-        public virtual ICollection<UserPlaylistsEntity> UserPlaylist { get; set; } = new List<UserPlaylistsEntity>(); 
+        public virtual ICollection<UserPlaylists> UserPlaylist { get; set; } = new List<UserPlaylists>(); 
     }

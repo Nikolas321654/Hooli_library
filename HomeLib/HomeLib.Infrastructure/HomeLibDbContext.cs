@@ -1,4 +1,4 @@
-﻿using HomeLib.Infrastructure.Model;
+﻿using HomeLib.Core;
 using HomeLib.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +10,12 @@ public class HomeLibDbContext : DbContext
     {
     }
 
-    public DbSet<AlbumEntity> Albums { get; set; }
-    public DbSet<ArtistEntity> Artists { get; set; }
-    public DbSet<TrackEntity> Tracks { get; set; }
-    public DbSet<UserEntity> Users { get; set; }
-    public DbSet<UserPlaylistsEntity> UserPlaylists { get; set; }
-    public DbSet<PlaylistTracksEntity> PlaylistTracks { get; set; }
+    public DbSet<Album> Albums { get; set; }
+    public DbSet<Artist> Artists { get; set; }
+    public DbSet<Track> Tracks { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<UserPlaylists> UserPlaylists { get; set; }
+    public DbSet<PlaylistTracks> PlaylistTracks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

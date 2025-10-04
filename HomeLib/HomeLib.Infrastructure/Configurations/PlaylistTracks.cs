@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using HomeLib.Infrastructure.Model;
-
+using  HomeLib.Core;
 namespace HomeLib.Infrastructure.Configurations;
 
-public class PlaylistTrackConfiguration : IEntityTypeConfiguration<PlaylistTracksEntity>
+public class PlaylistTrackConfiguration : IEntityTypeConfiguration<PlaylistTracks>
 {
-    public void Configure(EntityTypeBuilder<PlaylistTracksEntity> builder)
+    public void Configure(EntityTypeBuilder<PlaylistTracks> builder)
     {
         builder.HasKey(pt => new { pt.TrackId, pt.PlaylistId });
         

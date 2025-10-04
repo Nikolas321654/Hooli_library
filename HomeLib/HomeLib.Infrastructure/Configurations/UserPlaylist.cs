@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using HomeLib.Infrastructure.Model;
+using HomeLib.Core;
 
 namespace HomeLib.Infrastructure.Configurations;
 
-public class UserPlaylistConfiguration : IEntityTypeConfiguration<UserPlaylistsEntity>
+public class UserPlaylistConfiguration : IEntityTypeConfiguration<UserPlaylists>
 {
-    public void Configure(EntityTypeBuilder<UserPlaylistsEntity> builder)
+    public void Configure(EntityTypeBuilder<UserPlaylists> builder)
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasDefaultValueSql("gen_random_uuid()");
