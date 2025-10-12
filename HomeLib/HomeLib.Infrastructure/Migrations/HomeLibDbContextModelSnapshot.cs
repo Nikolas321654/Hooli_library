@@ -22,7 +22,7 @@ namespace HomeLib.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.AlbumEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Album", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,7 +46,7 @@ namespace HomeLib.Infrastructure.Migrations
                     b.ToTable("Albums");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.ArtistEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Artist", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,39 @@ namespace HomeLib.Infrastructure.Migrations
                     b.ToTable("Artists");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.PlaylistTracksEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Model.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HomeLib.Core.PlaylistTracks", b =>
                 {
                     b.Property<Guid>("TrackId")
                         .HasColumnType("uuid");
@@ -86,7 +118,7 @@ namespace HomeLib.Infrastructure.Migrations
                     b.ToTable("PlaylistTracks");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.TrackEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Track", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,35 +147,7 @@ namespace HomeLib.Infrastructure.Migrations
                     b.ToTable("Tracks");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.UserEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.UserPlaylistsEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.UserPlaylists", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,9 +171,9 @@ namespace HomeLib.Infrastructure.Migrations
                     b.ToTable("UserPlaylists");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.AlbumEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Album", b =>
                 {
-                    b.HasOne("HomeLib.Infrastructure.Model.ArtistEntity", "Artist")
+                    b.HasOne("HomeLib.Core.Artist", "Artist")
                         .WithMany("Albums")
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -178,15 +182,15 @@ namespace HomeLib.Infrastructure.Migrations
                     b.Navigation("Artist");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.PlaylistTracksEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.PlaylistTracks", b =>
                 {
-                    b.HasOne("HomeLib.Infrastructure.Model.UserPlaylistsEntity", "UserPlaylists")
+                    b.HasOne("HomeLib.Core.UserPlaylists", "UserPlaylists")
                         .WithMany("PlaylistTracks")
                         .HasForeignKey("PlaylistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeLib.Infrastructure.Model.TrackEntity", "Track")
+                    b.HasOne("HomeLib.Core.Track", "Track")
                         .WithMany("PlaylistTrack")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -197,15 +201,15 @@ namespace HomeLib.Infrastructure.Migrations
                     b.Navigation("UserPlaylists");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.TrackEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Track", b =>
                 {
-                    b.HasOne("HomeLib.Infrastructure.Model.AlbumEntity", "Album")
+                    b.HasOne("HomeLib.Core.Album", "Album")
                         .WithMany("Tracks")
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeLib.Infrastructure.Model.ArtistEntity", "Artist")
+                    b.HasOne("HomeLib.Core.Artist", "Artist")
                         .WithMany("Tracks")
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -216,9 +220,9 @@ namespace HomeLib.Infrastructure.Migrations
                     b.Navigation("Artist");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.UserPlaylistsEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.UserPlaylists", b =>
                 {
-                    b.HasOne("HomeLib.Infrastructure.Model.UserEntity", "User")
+                    b.HasOne("HomeLib.Core.Model.User", "User")
                         .WithMany("UserPlaylist")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -227,29 +231,29 @@ namespace HomeLib.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.AlbumEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Album", b =>
                 {
                     b.Navigation("Tracks");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.ArtistEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Artist", b =>
                 {
                     b.Navigation("Albums");
 
                     b.Navigation("Tracks");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.TrackEntity", b =>
-                {
-                    b.Navigation("PlaylistTrack");
-                });
-
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.UserEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Model.User", b =>
                 {
                     b.Navigation("UserPlaylist");
                 });
 
-            modelBuilder.Entity("HomeLib.Infrastructure.Model.UserPlaylistsEntity", b =>
+            modelBuilder.Entity("HomeLib.Core.Track", b =>
+                {
+                    b.Navigation("PlaylistTrack");
+                });
+
+            modelBuilder.Entity("HomeLib.Core.UserPlaylists", b =>
                 {
                     b.Navigation("PlaylistTracks");
                 });

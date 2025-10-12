@@ -7,66 +7,84 @@ namespace HomeLib.API.Artist;
 
 [ApiController]
 [Route("api/artist")]
-public class ArtistController(IArtistsService artistService) : ControllerBase
+public class ArtistController(IArtistsService artistService, ILogger<ArtistController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllArtists()
     {
+        logger.LogInformation("Getting all artists");
         return Ok(await artistService.GetAllArtists());
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetArtistById(Guid id)
     {
-        var artist = await artistService.GetArtistById(id);
-
-        if (artist == null)
-            return NotFound("Artist not found");
-
-        return Ok(artist);
+        try
+        {
+            var artist = await artistService.GetArtistById(id);
+            logger.LogInformation("Getting artist with id {Guid}", id);
+            return artist == null ? throw (new Exception("Artist not found")) : Ok(artist);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting artist with id {Guid}", id);
+            return StatusCode(404, ex.Message);
+        }
     }
 
     [HttpPost]
     public async Task<ActionResult<ArtistResponce>> AddArtist([FromBody] ArtistRequest artistRequest)
     {
-        var artist = new HomeLib.Core.Artist
+        try
         {
-            Name = artistRequest.Name,
-            Grammy = artistRequest.Grammy
-        };
+            await artistService.AddArtist(artistRequest.Name, artistRequest.Grammy);
 
-        if (string.IsNullOrEmpty(artist.Name) || artist.Name.Length < 1)
+            logger.LogInformation("Added artist with id {string}", artistRequest.Name);
+            return Ok("Artist added");
+        }
+        catch (Exception ex)
         {
+            logger.LogError(ex.Message, "Error adding artist with id {string}", artistRequest.Name);
             return BadRequest("Bad artist name");
         }
-
-        await artistService.AddArtist(artist);
-        return CreatedAtAction(nameof(GetArtistById), new { id = artist.Id }, artist);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteArtist(Guid id)
     {
-        var artist = await artistService.GetArtistById(id);
-
-        if (artist == null)
-            return NotFound("Artist not found");
-
-        await artistService.DeleteArtist(artist);
-        return NoContent();
+        try
+        {
+            var artist = await artistService.GetArtistById(id);
+            if (artist == null) throw new Exception("Artist not found");
+            await artistService.DeleteArtist(artist);
+            logger.LogInformation("Deleted artist with id {Guid}", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, "Error deleting artist with id {Guid}", id);
+            return NoContent();
+        }
     }
 
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<ArtistResponce>> UpdateArtist(Guid id, [FromBody] ArtistRequest artistRequest)
     {
-        var artist = await artistService.GetArtistById(id);
-        if (artist == null)
-            return NotFound("Artist not found");
+        try
+        {
+            var artist = await artistService.GetArtistById(id);
+            if (artist == null) throw new Exception("Artist not found");
+                
+            artist.Name = artistRequest.Name;
+            artist.Grammy = artistRequest.Grammy;
+            await artistService.UpdateArtist(artist);
 
-        artist.Name = artistRequest.Name;
-        artist.Grammy = artistRequest.Grammy;
-        await artistService.UpdateArtist(artist);
-
-        return Ok(artist);
+            return Ok(artist);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, $"Error updating artist with id {typeof(Guid)}", id);
+            return BadRequest(ex.Message);
+        }
     }
 }

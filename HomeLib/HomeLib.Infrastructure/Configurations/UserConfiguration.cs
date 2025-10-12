@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using HomeLib.Core;
+using HomeLib.Core.Model;
 
 namespace HomeLib.Infrastructure.Configurations;
 

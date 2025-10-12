@@ -1,15 +1,12 @@
 ﻿using HomeLib.Core;
+using HomeLib.Core.Model;
 using HomeLib.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeLib.Infrastructure;
 
-public class HomeLibDbContext : DbContext
+public class HomeLibDbContext(DbContextOptions<HomeLibDbContext> options) : DbContext(options)
 {
-    public HomeLibDbContext(DbContextOptions<HomeLibDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<Album> Albums { get; set; }
     public DbSet<Artist> Artists { get; set; }
     public DbSet<Track> Tracks { get; set; }

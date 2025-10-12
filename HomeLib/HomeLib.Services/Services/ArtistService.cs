@@ -15,10 +15,15 @@ public class ArtistService(IArtistRepository artistRepository) : IArtistsService
     {
         return await artistRepository.GetArtistByIdAsync(id);
     }
-    
-    public async Task AddArtist(Artist artist)
+
+    public async Task AddArtist(string name, bool grammy)
     {
-        await artistRepository.AddArtistAsync(artist);
+        var newArtist = new Artist
+        {
+            Name = name,
+            Grammy = grammy,
+        };
+        await artistRepository.AddArtistAsync(newArtist);
     }
 
     public async Task DeleteArtist(Artist artist)
