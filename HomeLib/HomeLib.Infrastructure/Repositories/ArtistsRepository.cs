@@ -12,21 +12,37 @@ public class ArtistsRepository(HomeLibDbContext context) : IArtistRepository
         return await context.Artists.ToListAsync();
     }
 
-    public async Task AddArtistAsync(Artist artist)
+    public async Task<bool> ExistingAsync(Guid id)
     {
+        return await context.Artists.AsNoTracking().AnyAsync(a => a.Id == id);
+    }
+
+    public async Task AddArtistAsync(string name, bool grammy)
+    {
+        var artist = new Artist()
+        {
+            Name = name,
+            Grammy = grammy
+        };
         await context.Artists.AddAsync(artist);
         await context.SaveChangesAsync();
     }
 
-    public async Task UpdateArtistAsync(Artist artist)
+    public async Task UpdateArtistAsync(string name, bool grammy, Guid id)
     {
-        context.Update(artist);
-        await context.SaveChangesAsync();
+        var artist = await context.Artists.FindAsync(id);
+        if (artist != null)
+        {
+            artist.Name = name;
+            artist.Grammy = grammy;
+            await context.SaveChangesAsync();
+        }
     }
 
-    public async Task DeleteArtistAsync(Artist artist)
+    public async Task DeleteArtistAsync(Guid id)
     {
-        context.Artists.Remove(artist);
+        var artist = context.Artists.FindAsync(id);
+        context.Artists.Remove(await artist);
         await context.SaveChangesAsync();
     }
 

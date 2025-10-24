@@ -13,12 +13,12 @@ public class UsersRepository(HomeLibDbContext context) : IUsersRepository
         return await context.Users.ToListAsync();
     }
 
-    public async Task<User?> GetUsersByIdAsync(Guid id)
+    public async Task<User?> GetUserByIdAsync(Guid id)
     {
         return await context.Users.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<User?> GetUsersByLoginAsync(string login)
+    public async Task<User?> GetUserByLoginAsync(string login)
     {
         return await context.Users.FirstOrDefaultAsync(x => x.Login == login);
     }
@@ -33,6 +33,12 @@ public class UsersRepository(HomeLibDbContext context) : IUsersRepository
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
         if (user != null) context.Users.Remove(user);
+        await context.SaveChangesAsync();
+    }
+    
+
+    public async Task SaveChangesAsync()
+    {
         await context.SaveChangesAsync();
     }
 }

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using HomeLib.API.Middleware;
 using HomeLib.Core.Interfaces;
 using HomeLib.Core.Interfaces.ForRepositories;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IArtistsService, ArtistService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.Configure<AuthSettings>(configuration.GetSection("AuthSettings"));
 builder.Services.AddAuth(configuration);
+
 builder.Services.AddDbContext<HomeLibDbContext>(options =>
 {
     options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
@@ -46,7 +48,7 @@ if (app.Environment.IsDevelopment())
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine("*** Hello from server! ***");
 
-// app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

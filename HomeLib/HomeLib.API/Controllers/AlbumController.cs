@@ -1,6 +1,6 @@
 ﻿namespace HomeLib.API.Album;
 
-public class AlbumContoler
+public class AlbumController
 {
     
 }

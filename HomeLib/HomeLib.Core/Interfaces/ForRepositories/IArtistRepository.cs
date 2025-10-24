@@ -3,8 +3,9 @@
 public interface IArtistRepository
 {
     public Task<List<Artist>> GetAllArtistAsync();
-    public Task AddArtistAsync(Artist artist);
-    public Task UpdateArtistAsync(Artist artist);
-    public Task DeleteArtistAsync(Artist artist);
+    public Task AddArtistAsync(string name, bool grammy);
+    public Task UpdateArtistAsync(string name, bool grammy, Guid id);
+    public Task DeleteArtistAsync(Guid id);
+    public Task<bool> ExistingAsync(Guid id);
     public Task<Artist?> GetArtistByIdAsync(Guid id);
 }
