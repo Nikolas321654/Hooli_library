@@ -1,4 +1,6 @@
-﻿namespace HomeLib.Core;
+﻿using HomeLib.Core.Model;
+
+namespace HomeLib.Core;
 
 public class PlaylistTracks
 {

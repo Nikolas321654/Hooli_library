@@ -1,4 +1,4 @@
-﻿namespace HomeLib.Core;
+﻿namespace HomeLib.Core.Model;
 
 public class Album
 {
@@ -6,7 +6,7 @@ public class Album
     public string Name { get; set; } = string.Empty;
     public int Year { get; set; }
     public Guid ArtistId { get; set; }
+    public Artist? Artist { get; set; }
 
-    public Artist Artist { get; set; } = null!;
     public ICollection<Track> Tracks { get; set; } = new List<Track>();
 }

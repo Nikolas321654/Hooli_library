@@ -1,4 +1,5 @@
-﻿using HomeLib.API.DataTypes;
+﻿using System.Text.Json;
+using HomeLib.API.DataTypes;
 using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
 using HomeLib.Core.Interfaces;
@@ -16,7 +17,6 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> GetUsers()
     {
         var users = await userService.GetAllUsers();
-
         var userResponse = users.Select(user => new UserResponse()
         {
             UserId = user.Id,
@@ -46,23 +46,21 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(userResponse);
     }
 
-
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] UserRequest userRequest)
     {
-        var newUserID = await userService.RegisterUser(userRequest.Login, userRequest.Password, userRequest.Name);
+        var newUserId = await userService.RegisterUser(userRequest.Login, userRequest.Password, userRequest.Name);
         var token = await userService.Login(userRequest.Login, userRequest.Password);
-        return Created($"api/user/{newUserID}", new { token = token });
+        return Created($"api/user/{newUserId}", new { BearerToken = token });
     }
-
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginUser([FromBody] UserLogin UserLogin)
+    public async Task<IActionResult> LoginUser([FromBody] UserLogin userLogin)
     {
-        var token = await userService.Login(UserLogin.Login, UserLogin.Password);
-        return Ok(token);
+        var token = await userService.Login(userLogin.Login, userLogin.Password);
+        return Ok(new { BearerToken = token });
     }
-    
+
     [Authorize]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteUser(Guid id)

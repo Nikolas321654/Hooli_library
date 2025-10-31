@@ -1,7 +1,12 @@
-﻿namespace HomeLib.Core.Interfaces;
+﻿using HomeLib.Core.Model;
+
+namespace HomeLib.Core.Interfaces;
 
 public interface ITrackService
 {
     public Task<List<Track>> GetAllTracks();
-    public Task AddTrack(Track track);
+    public Task<Track> GetTrackById(Guid id);
+    public Task AddTrack(string name, Guid albumId, Guid artistId, int duration);
+    public Task DeleteTrack(Guid id);
+    public Task UpdateTrack(Guid id, string name, int duration);
 }

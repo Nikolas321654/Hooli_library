@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using  HomeLib.Core;
+using HomeLib.Core.Model;
 
 namespace HomeLib.Infrastructure.Configurations;
 
@@ -9,7 +10,6 @@ public class AlbumConfiguration : IEntityTypeConfiguration<Album>
     public void Configure(EntityTypeBuilder<Album> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasDefaultValueSql("gen_random_uuid()");
         
         builder.HasOne(a => a.Artist)
             .WithMany(artist => artist.Albums)

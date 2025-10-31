@@ -18,10 +18,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
 builder.Services.AddScoped<ITrackService, TrackService>();
 builder.Services.AddScoped<ITrackRepository, TracksRepository>();
+
 builder.Services.AddScoped<IArtistRepository, ArtistsRepository>();
 builder.Services.AddScoped<IArtistsService, ArtistService>();
+
+builder.Services.AddScoped<IAlbumService, AlbumService>();
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+
 builder.Services.AddScoped<JwtService>();
 builder.Services.Configure<AuthSettings>(configuration.GetSection("AuthSettings"));
 builder.Services.AddAuth(configuration);

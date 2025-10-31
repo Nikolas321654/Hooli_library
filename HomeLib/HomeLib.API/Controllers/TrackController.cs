@@ -1,6 +1,6 @@
 ﻿using HomeLib.API.DataTypes.DataRequest;
+using HomeLib.API.DataTypes.DataResponse;
 using HomeLib.Core.Interfaces;
-using HomeLib.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,35 +12,60 @@ namespace HomeLib.API.Track;
 public class TrackController(ITrackService trackService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetTracks()
+    public async Task<IActionResult> GetAllTracks()
     {
-        return Ok(await trackService.GetAllTracks());
+        var tracks = await trackService.GetAllTracks();
+        var tracksResponse = tracks.Select(track => new TrackResponse()
+        {
+            Name = track.Name,
+            Artist = track.Artist?.Name,
+            Album = track.Album?.Name,
+            Duration = track.Duration,
+            TrackId = track.Id,
+        }).ToList();
+
+        return Ok(tracksResponse);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetTrackById(Guid id)
     {
-        return Ok(await trackService.GetTrackById(id));
+        var track = await trackService.GetTrackById(id);
+        var trackResponse = new TrackResponse()
+        {
+            Name = track.Name,
+            Artist = track.Artist?.Name,
+            Album = track.Album?.Name,
+            Duration = track.Duration,
+            TrackId = track.Id,
+        };
+
+        return Ok(trackResponse);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddTrack([FromBody] TrackRequest trackRequest)
+    {
+        await trackService.AddTrack(
+            trackRequest.Name,
+            trackRequest.AlbumId,
+            trackRequest.ArtistId,
+            trackRequest.Duration);
+
+        return Created("api/track", trackRequest);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateTrack(Guid id, [FromBody] TrackUpdateRequest trackUpdate)
+    {
+        await trackService.UpdateTrack(id, trackUpdate.Name, trackUpdate.Duration);
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteTrack(Guid id)
     {
+        await trackService.DeleteTrack(id);
         return NoContent();
-    }
-
-    [HttpPost("{id:guid}")]
-    public async Task<IActionResult> UpdateTrack()
-    {
-        return Ok();
-    }
-    
-    
-    [HttpPost]
-    public async Task<ActionResult<TrackRequest>> AddTrack([FromBody] TrackRequest trackRequest)
-    {
-        // await trackService.AddTrack(trackRequest.AlbumId, trackRequest.ArtistId, trackRequest.Name, );
-        // return Created($"track/{coreTrack.Id}", coreTrack.Id);
-        return Ok(trackRequest);
     }
 }

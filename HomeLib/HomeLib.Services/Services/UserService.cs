@@ -1,4 +1,5 @@
-﻿using HomeLib.Core;
+﻿using System.Text.Json;
+using HomeLib.Core;
 using HomeLib.Core.Interfaces;
 using HomeLib.Core.Interfaces.ForRepositories;
 using HomeLib.Core.Model;
@@ -29,22 +30,23 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
 
         var user = new User
         {
+            Id = Guid.NewGuid(),
             Name = name,
             Login = login,
             CreatedAt = DateTime.UtcNow
         };
 
         var hashPassword = new PasswordHasher<User>().HashPassword(user, password);
-
         user.Password = hashPassword;
         await usersRepository.AddUserAsync(user);
+
         return user.Id;
     }
 
     public async Task<string> Login(string login, string password)
     {
         var account = await usersRepository.GetUserByLoginAsync(login);
-        if (account == null) throw new BadRequestException("Invalid login or password");
+        if (account == null) throw new BadRequestException($"User with {login} login not found");
 
         var result = new PasswordHasher<User>().VerifyHashedPassword(account, account.Password, password);
         return result == PasswordVerificationResult.Failed
@@ -55,6 +57,8 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
     public async Task DeleteUserAsync(Guid id)
     {
         if (id == Guid.Empty) throw new BadRequestException("Invalid id");
+        var user = await usersRepository.GetUserByIdAsync(id);
+        if (user == null) throw new NotFoundException($"User with {id} id not found");
         await usersRepository.DeleteUserAsync(id);
     }
 
@@ -71,6 +75,7 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
         var hashPassword = new PasswordHasher<User>().HashPassword(user, newPassword);
         user.Password = hashPassword;
         user.UpdatedAt = DateTime.UtcNow;
+
         await usersRepository.SaveChangesAsync();
     }
 }

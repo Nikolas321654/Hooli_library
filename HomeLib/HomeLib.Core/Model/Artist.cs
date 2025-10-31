@@ -1,4 +1,4 @@
-﻿namespace HomeLib.Core;
+﻿namespace HomeLib.Core.Model;
 
 public class Artist
 {

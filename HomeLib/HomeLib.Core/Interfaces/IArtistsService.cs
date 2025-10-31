@@ -1,4 +1,6 @@
-﻿namespace HomeLib.Core.Interfaces;
+﻿using HomeLib.Core.Model;
+
+namespace HomeLib.Core.Interfaces;
 
 public interface IArtistsService
 {
