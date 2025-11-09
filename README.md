@@ -20,7 +20,14 @@
 - **PostgreSQL**
 - **Docker**
 
+
 ---
+## 📊 Database diagram
+![alt text](image.png)
+
+> 📄 Diagram file: `Hooli_Music.drawio` (open with [draw.io](https://draw.io))
+
+
 
 ## ▶️ Installation
 
