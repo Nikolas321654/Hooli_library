@@ -1,6 +1,4 @@
-﻿using HomeLib.Core.Model;
-
-namespace HomeLib.Core;
+﻿namespace HomeLib.Core.Model;
 
 public class UserPlaylists
 {

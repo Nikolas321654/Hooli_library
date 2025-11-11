@@ -28,6 +28,9 @@ builder.Services.AddScoped<IArtistsService, ArtistService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 
+builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+
 builder.Services.AddScoped<JwtService>();
 builder.Services.Configure<AuthSettings>(configuration.GetSection("AuthSettings"));
 builder.Services.AddAuth(configuration);
@@ -52,7 +55,7 @@ if (app.Environment.IsDevelopment())
 }
 
 Console.ForegroundColor = ConsoleColor.Green;
-Console.WriteLine("*** Hello from server! ***");
+Console.WriteLine("*** Hello from 'Hooli' server! ***");
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseRouting();

@@ -21,7 +21,7 @@
       POSTGRES_DB: HomeLibDataBase
       POSTGRES_PASSWORD: 1234
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
     container_name: db_postgresql_library
 
 volumes:
