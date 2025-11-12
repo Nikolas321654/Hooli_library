@@ -23,7 +23,7 @@
 
 ---
 ## 📊 Database diagram
-![alt text](image.png)
+<img width="827" height="726" alt="image" src="https://github.com/user-attachments/assets/01a48b68-f7e6-4417-8589-1e20cc8faa2d" />
 
 > 📄 Diagram file: `Hooli_Music.drawio` (open with [draw.io](https://draw.io))
 
