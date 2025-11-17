@@ -1,6 +1,6 @@
 ﻿namespace HomeLib.Core.Model;
 
-public class User
+public sealed class User
 {
     public Guid Id { get; set; }
     public string Login { get; set; } = string.Empty;
@@ -10,5 +10,5 @@ public class User
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
-    public virtual ICollection<UserPlaylists> UserPlaylist { get; set; } = new List<UserPlaylists>();
+    public ICollection<UserPlaylists> UserPlaylist { get; set; } = new List<UserPlaylists>();
 }

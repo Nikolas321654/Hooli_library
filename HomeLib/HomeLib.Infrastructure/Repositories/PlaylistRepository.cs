@@ -23,6 +23,14 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<List<PlaylistTracks>> GetAllTracksAsync(Guid userId, Guid playlistId)
+    {
+        return await context.PlaylistTracks
+            .Where(x => x.PlaylistId == playlistId && x.UserPlaylists.UserId == userId)
+            .Include(t => t.Track)
+            .ToListAsync();
+    }
+
     public async Task AddPlaylistsAsync(UserPlaylists playlistTracks)
     {
         await context.AddAsync(playlistTracks);
@@ -45,15 +53,7 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<PlaylistTracks>> GetAllTracksAsync(Guid userId, Guid playlistId)
-    {
-        return await context.PlaylistTracks
-            .Where(x => x.PlaylistId == playlistId && x.UserPlaylists.UserId == userId)
-            .Include(t => t.Track)
-            .ToListAsync();
-    }
-
-    public async Task<PlaylistTracks?> GetTrackByIdAsync(Guid userId, Guid playlistId, Guid trackId)
+    public async Task<PlaylistTracks?> GetPlaylistTrackByIdAsync(Guid userId, Guid playlistId, Guid trackId)
     {
         return await context.PlaylistTracks
             .Where(x => x.PlaylistId == playlistId && x.UserPlaylists.UserId == userId)
@@ -70,9 +70,10 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
     public async Task DeleteTrackAsync(Guid userId, Guid playlistId, Guid trackId)
     {
         var track = await context.PlaylistTracks
-            .Where(x => x.PlaylistId == playlistId
-                        && x.TrackId == trackId
-                        && x.UserPlaylists.UserId == userId)
+            .Where(x =>
+                x.PlaylistId == playlistId
+                && x.TrackId == trackId
+                && x.UserPlaylists.UserId == userId)
             .FirstOrDefaultAsync();
 
         if (track != null)
@@ -99,5 +100,10 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
             .MaxAsync(pt => (int?)pt.Position);
 
         return maxPosition ?? 0;
+    }
+
+    public async Task<Track?> GetTrackByIdAsync(Guid trackId)
+    {
+        return await context.Tracks.FirstOrDefaultAsync(x => x.Id == trackId);
     }
 }

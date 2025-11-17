@@ -9,9 +9,19 @@ public class AlbumRepository(HomeLibDbContext context) : IAlbumRepository
 {
     public async Task<List<Album>> GetAllAlbumsAsync()
     {
-        return await context.Albums.AsNoTracking()
+        return await context.Albums
             .Include(t => t.Artist)
             .Include(t => t.Tracks)
+            .Where(a => a.IsDeleted == false)
+            .ToListAsync();
+    }
+
+    public async Task<List<Album>> GetAllDeletedAlbumsAsync()
+    {
+        return await context.Albums
+            .Include(t => t.Artist)
+            .Include(t => t.Tracks)
+            .Where(a => a.IsDeleted == true)
             .ToListAsync();
     }
 
@@ -20,7 +30,7 @@ public class AlbumRepository(HomeLibDbContext context) : IAlbumRepository
         return context.Albums
             .Include(a => a.Artist)
             .Include(t => t.Tracks)
-            .FirstOrDefaultAsync(a => a.Id == id);
+            .FirstOrDefaultAsync(a => a.IsDeleted == false && a.Id == id);
     }
 
     public Task AddAlbumAsync(Album album)
@@ -29,7 +39,7 @@ public class AlbumRepository(HomeLibDbContext context) : IAlbumRepository
         return context.SaveChangesAsync();
     }
 
-    public async Task DeleteAlbumAsync(Guid id)
+    public async Task HardDeleteAlbumAsync(Guid id)
     {
         var album = await context.Albums.FindAsync(id);
         if (album != null)
@@ -43,5 +53,15 @@ public class AlbumRepository(HomeLibDbContext context) : IAlbumRepository
     {
         context.Albums.Update(album);
         return context.SaveChangesAsync();
+    }
+    
+    public async Task<List<Album>> GetNewAlbums(int count)
+    {
+        return await context.Albums
+            .Include(ta => ta.Artist)
+            .Where(t => t.IsDeleted == false)
+            .OrderByDescending(t => t.Year)
+            .Take(count)
+            .ToListAsync();
     }
 }

@@ -13,6 +13,7 @@ public class HomeLibDbContext(DbContextOptions<HomeLibDbContext> options) : DbCo
     public DbSet<User> Users { get; set; }
     public DbSet<UserPlaylists> UserPlaylists { get; set; }
     public DbSet<PlaylistTracks> PlaylistTracks { get; set; }
+    public DbSet<TracksArtists> TracksArtists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +22,6 @@ public class HomeLibDbContext(DbContextOptions<HomeLibDbContext> options) : DbCo
         modelBuilder.ApplyConfiguration(new AlbumConfiguration());
         modelBuilder.ApplyConfiguration(new UserPlaylistConfiguration());
         modelBuilder.ApplyConfiguration(new PlaylistTrackConfiguration());
+        modelBuilder.ApplyConfiguration(new TracksArtistsConfiguration());
     }
 }

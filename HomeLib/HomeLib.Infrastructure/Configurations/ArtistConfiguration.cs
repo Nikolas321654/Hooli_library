@@ -14,9 +14,5 @@ public class ArtistConfiguration : IEntityTypeConfiguration<Artist>
         builder.HasMany(a => a.Albums)
             .WithOne(album => album.Artist)
             .HasForeignKey(album => album.ArtistId);
-
-        builder.HasMany(a => a.Tracks)
-            .WithOne(track => track.Artist)
-            .HasForeignKey(track => track.ArtistId);
     }
 }

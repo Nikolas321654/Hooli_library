@@ -16,7 +16,10 @@ public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylist
     public async Task<UserPlaylists> GetPlaylistById(Guid userId, Guid playlistId)
     {
         var playlist = await playlistRepository.GetPlaylistByIdAsync(userId, playlistId);
-        return playlist ?? throw new NotFoundException("Playlist not found");
+        if (playlist == null) throw new NotFoundException($"Playlist with id: {playlistId}, not found");
+        playlist.PlaylistTracks = await playlistRepository.GetAllTracksAsync(userId, playlistId);
+
+        return playlist;
     }
 
     public async Task<UserPlaylists> AddPlaylist(Guid userId, string name)
@@ -27,13 +30,14 @@ public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylist
             Name = name,
             UserId = userId,
             CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         await playlistRepository.AddPlaylistsAsync(playlist);
         return playlist;
     }
 
-    public async Task DeletePlaylist(Guid userId, Guid playlistId)
+    public async Task HardDeletePlaylist(Guid userId, Guid playlistId)
     {
         await GetPlaylistById(userId, playlistId);
         await playlistRepository.DeletePlaylistsAsync(userId, playlistId);
@@ -41,19 +45,25 @@ public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylist
 
     public async Task UpdatePlaylist(Guid userId, Guid playlistId, string name)
     {
-        var playlist = await GetPlaylistById(userId, playlistId);
+        var playlist = await playlistRepository.GetPlaylistByIdAsync(userId, playlistId);
+        if (playlist == null) throw new NotFoundException($"Playlist with id: {playlistId}, not found");
 
         playlist.Name = name;
+        playlist.UpdatedAt = DateTime.UtcNow;
         await playlistRepository.UpdatePlaylistsAsync(playlist);
     }
 
     public async Task AddTrack(Guid userId, Guid playlistId, Guid trackId)
     {
         var playlist = await playlistRepository.GetPlaylistByIdAsync(userId, playlistId);
+        if (await playlistRepository.GetTrackByIdAsync(trackId) == null)
+            throw new NotFoundException($"Track with id: {trackId}, not found");
+
         if (playlist == null)
-        {
             throw new NotFoundException("Playlist not found");
-        }
+
+        if (await playlistRepository.GetPlaylistTrackByIdAsync(userId, playlistId, trackId) != null)
+            throw new Exception("Track already exists");
 
         var maxPosition = await playlistRepository.GetMaxPositionAsync(playlistId);
 
@@ -70,7 +80,7 @@ public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylist
 
     public async Task DeleteTrack(Guid userId, Guid playlistId, Guid trackId)
     {
-        var track = await playlistRepository.GetTrackByIdAsync(userId, playlistId, trackId);
+        var track = await playlistRepository.GetPlaylistTrackByIdAsync(userId, playlistId, trackId);
         if (track == null) throw new NotFoundException($"Track with id: {trackId}, not found");
 
         await playlistRepository.DeleteTrackAsync(userId, playlistId, trackId);

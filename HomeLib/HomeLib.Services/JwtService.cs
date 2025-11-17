@@ -2,10 +2,11 @@
 using System.Security.Claims;
 using System.Text;
 using HomeLib.Core.Model;
+using HomeLib.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace HomeLib.Infrastructure;
+namespace HomeLib.Services;
 
 public class JwtService(IOptions<AuthSettings> authSettings)
 {

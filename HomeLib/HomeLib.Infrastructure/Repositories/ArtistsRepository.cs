@@ -12,16 +12,29 @@ public class ArtistsRepository(HomeLibDbContext context) : IArtistRepository
     {
         return await context.Artists
             .Include(a => a.Albums)
-            .Include(t => t.Tracks)
+            .Include(a => a.TrackArtists)
+            .ThenInclude(ta => ta.Track)
+            .Where(a => a.IsDeleted == false)
             .ToListAsync();
     }
 
+    public async Task<List<Artist>> GetAllDeletedArtistAsync()
+    {
+        return await context.Artists
+            .Include(a => a.Albums)
+            .Include(a => a.TrackArtists)
+            .ThenInclude(ta => ta.Track)
+            .Where(a => a.IsDeleted == true)
+            .ToListAsync();
+    }
+    
     public async Task<Artist?> GetArtistByIdAsync(Guid id)
     {
         return await context.Artists
             .Include(a => a.Albums)
-            .Include(t => t.Tracks)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .Include(t => t.TrackArtists)
+            .ThenInclude(ta => ta.Track)
+            .FirstOrDefaultAsync(x => x.Id == id &&  x.IsDeleted == false);
     }
 
     public async Task AddArtistAsync(Artist artist)
@@ -36,10 +49,13 @@ public class ArtistsRepository(HomeLibDbContext context) : IArtistRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteArtistAsync(Guid id)
+    public async Task HardDeleteArtistAsync(Guid id)
     {
-        var artist = context.Artists.FindAsync(id);
-        context.Artists.Remove(await artist);
-        await context.SaveChangesAsync();
+        var artist = await context.Artists.FindAsync(id);
+        if (artist != null)
+        {
+            context.Artists.Remove(artist);
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Security.Claims;
+using System.Text.Json;
 using HomeLib.API.DataTypes;
 using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
@@ -12,6 +13,12 @@ namespace HomeLib.API.User;
 [Route("api/user")]
 public class UserController(IUserService userService) : ControllerBase
 {
+    private Guid GetUserId()
+    {
+        var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return id == null ? throw new Exception("User not found") : Guid.Parse(id);
+    }
+
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetUsers()
@@ -62,18 +69,18 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteUser(Guid id)
+    [HttpDelete]
+    public async Task<IActionResult> DeleteUser()
     {
-        await userService.DeleteUserAsync(id);
+        await userService.DeleteUserAsync(GetUserId());
         return NoContent();
     }
 
     [Authorize]
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] PasswordChange passwordChange)
+    [HttpPut]
+    public async Task<IActionResult> UpdateUser([FromBody] PasswordChange passwordChange)
     {
-        await userService.UpdateUserPassword(id, passwordChange.NewPassword, passwordChange.OldPassword);
+        await userService.UpdateUserPassword(GetUserId(), passwordChange.NewPassword, passwordChange.OldPassword);
         return NoContent();
     }
 }

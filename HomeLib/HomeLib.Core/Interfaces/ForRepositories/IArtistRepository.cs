@@ -7,6 +7,7 @@ public interface IArtistRepository
     public Task<List<Artist>> GetAllArtistAsync();
     public Task AddArtistAsync(Artist artist);
     public Task UpdateArtistAsync(Artist artist);
-    public Task DeleteArtistAsync(Guid id);
+    public Task HardDeleteArtistAsync(Guid id);
     public Task<Artist?> GetArtistByIdAsync(Guid id);
+    public Task<List<Artist>> GetAllDeletedArtistAsync();
 }

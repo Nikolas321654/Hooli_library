@@ -10,8 +10,9 @@ public interface IPlaylistRepository
     public Task DeletePlaylistsAsync(Guid userId, Guid playlistId);
     public Task UpdatePlaylistsAsync(UserPlaylists playlistTracks);
     public Task<List<PlaylistTracks>> GetAllTracksAsync(Guid userId, Guid playlistId);
-    public Task<PlaylistTracks?> GetTrackByIdAsync(Guid userId, Guid playlistId, Guid trackId);
+    public Task<PlaylistTracks?> GetPlaylistTrackByIdAsync(Guid userId, Guid playlistId, Guid trackId);
     public Task AddTrackAsync(PlaylistTracks track);
     public Task DeleteTrackAsync(Guid userId, Guid playlistId, Guid trackId);
     public Task<int> GetMaxPositionAsync(Guid playlistId);
+    public Task<Track?> GetTrackByIdAsync(Guid trackId);
 }

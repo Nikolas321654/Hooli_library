@@ -1,5 +1,6 @@
 ﻿using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
+using HomeLib.API.Model.DataResponse;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,34 +16,21 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     public async Task<IActionResult> GetAllArtists()
     {
         var artists = await artistService.GetAllArtists();
-        var artistsResponse = artists.Select(artist => new ArtistResponse
+        var artistsResponse = artists.Select(artist => new ArtistResponse()
         {
             ArtistId = artist.Id,
             Name = artist.Name,
             Grammy = artist.Grammy,
-            Albums = artist.Albums.Select(album => new AlbumForArtistResponse()
-            {
-                Name = album.Name,
-                Year = album.Year,
-                AlbumId = album.Id,
-            }).ToList(),
-
-            Tracks = artist.Tracks.Select(track => new TrackForArtistResponse()
-            {
-                Name = track.Name,
-                Duration = track.Duration,
-                TrackId = track.Id,
-            }).ToList()
         });
-
+        
         return Ok(artistsResponse);
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetArtistById(Guid id)
-    {
+        [HttpGet("{id:guid}/albums_and_tracks")]
+    public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id)
+    {   
         var artist = await artistService.GetArtistById(id);
-        var artistResponse = new ArtistResponse
+        var artistResponse = new ArtistAlbumsTracksResponse
         {
             ArtistId = artist.Id,
             Name = artist.Name,
@@ -54,11 +42,11 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
                 AlbumId = album.Id,
             }).ToList(),
 
-            Tracks = artist.Tracks.Select(track => new TrackForArtistResponse()
+            Tracks = artist.TrackArtists.Select(track => new TrackForArtistResponse()
             {
-                Name = track.Name,
-                Duration = track.Duration,
-                TrackId = track.Id,
+                TrackId = track.TrackId,
+                Name = track.Track.Name,
+                Duration = track.Track.Duration
             }).ToList()
         };
 
@@ -68,9 +56,8 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     [HttpGet("{id:guid}/albums")]
     public async Task<IActionResult> GetArtistAlbums(Guid id)
     {
-        var artists = await artistService.GetArtistById(id);
         var artist = await artistService.GetArtistById(id);
-        var artistResponse = new ArtistResponse
+        var artistResponse = new ArtistAlbumsResponse
         {
             ArtistId = artist.Id,
             Name = artist.Name,
@@ -89,18 +76,17 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     [HttpGet("{id:guid}/tracks")]
     public async Task<IActionResult> GetArtistTracks(Guid id)
     {
-        var artists = await artistService.GetArtistById(id);
         var artist = await artistService.GetArtistById(id);
-        var artistResponse = new ArtistResponse
+        var artistResponse = new ArtistTracksResponse()
         {
             ArtistId = artist.Id,
             Name = artist.Name,
             Grammy = artist.Grammy,
-            Tracks = artist.Tracks.Select(track => new TrackForArtistResponse()
+            Tracks = artist.TrackArtists.Select(track => new TrackForArtistResponse()
             {
-                Name = track.Name,
-                Duration = track.Duration,
-                TrackId = track.Id,
+                TrackId = track.TrackId,
+                Name = track.Track.Name,
+                Duration = track.Track.Duration
             }).ToList()
         };
 
@@ -114,10 +100,18 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
         return Created("api/artist", artistRequest);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> DeleteArtist(Guid id)
+    // Carefully    
+    [HttpDelete("{id:guid}/hard_delete")]
+    public async Task<ActionResult> HardDeleteArtist(Guid id)
     {
-        await artistService.DeleteArtist(id);
+        await artistService.HardDeleteArtist(id);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> SoftDeleteArtist(Guid id)
+    {
+        await artistService.SoftDeleteArtist(id);
         return NoContent();
     }
 

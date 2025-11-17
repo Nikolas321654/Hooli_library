@@ -22,11 +22,12 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     public async Task<IActionResult> GetAllPlaylist()
     {
         var playlists = await playlistService.GetAllPlaylists(GetUserId());
-        var playlistsResponse = playlists.Select(playlists => new PlaylistResponse
+
+        var playlistsResponse = playlists.Select(p => new PlaylistResponse
         {
-            Id = playlists.Id,
-            Name = playlists.Name,
-            CreatedAt = playlists.CreatedAt,
+            Id = p.Id,
+            Name = p.Name,
+            CreatedAt = p.CreatedAt,
         }).ToList();
 
         return Ok(playlistsResponse);
@@ -57,13 +58,13 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     public async Task<IActionResult> CreatePlaylist([FromBody] PlaylistRequest playlistRequest)
     {
         var newPlaylist = await playlistService.AddPlaylist(GetUserId(), playlistRequest.Name);
-        return CreatedAtAction(nameof(GetPlaylistTracksById), new { playlistId = newPlaylist.Id }, newPlaylist);
+        return Created($"api/user/playlist/{newPlaylist.Id}", newPlaylist);
     }
 
     [HttpDelete("{playlistId:Guid}")]
     public async Task<IActionResult> DeletePlaylistById(Guid playlistId)
     {
-        await playlistService.DeletePlaylist(GetUserId(), playlistId);
+        await playlistService.HardDeletePlaylist(GetUserId(), playlistId);
         return NoContent();
     }
 

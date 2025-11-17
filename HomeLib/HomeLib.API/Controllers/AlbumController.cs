@@ -11,8 +11,8 @@ namespace HomeLib.API.Album;
 [Route("api/album")]
 public class AlbumController(IAlbumService albumService) : ControllerBase
 {
-    [HttpGet]
-    public async Task<IActionResult> GetAllAlbums()
+    [HttpGet("tracks")]
+    public async Task<IActionResult> GetAllAlbumsWithTracks()
     {
         var albumsList = await albumService.GetAllAlbums();
         var albumsResponse = albumsList.Select(album => new AlbumResponse
@@ -26,6 +26,21 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
                 Name = track.Name,
                 Duration = track.Duration,
             }).ToList()
+        });
+
+        return Ok(albumsResponse);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllAlbums()
+    {
+        var albumsList = await albumService.GetAllAlbums();
+        var albumsResponse = albumsList.Select(album => new AlbumResponse
+        {
+            AlbumId = album.Id,
+            Name = album.Name,
+            Year = album.Year,
+            Artist = album.Artist?.Name,
         });
 
         return Ok(albumsResponse);
@@ -65,10 +80,33 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteAlbum(Guid id)
+    // Carefully    
+    [HttpDelete("{id:guid}/hard_delete")]
+    public async Task<IActionResult> HardDeleteAlbum(Guid id)
     {
-        await albumService.DeleteAlbum(id);
+        await albumService.HardDeleteAlbum(id);
         return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> SoftDeleteAlbum(Guid id)
+    {
+        await albumService.SoftDeleteAlbum(id);
+        return NoContent();
+    }
+
+    [HttpGet("new_albums")]
+    public async Task<IActionResult> GetNewAlbums([FromBody] NewAlbumsRequest newAlbumsRequest)
+    {
+        var albums = await albumService.GetNewAlbums(newAlbumsRequest.Count);
+        var albumsResponse = albums.Select(album => new AlbumResponse
+        {
+            AlbumId = album.Id,
+            Name = album.Name,
+            Year = album.Year,
+            Artist = album.Artist?.Name,
+        });
+
+        return Ok(albumsResponse);
     }
 }

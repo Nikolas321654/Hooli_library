@@ -1,5 +1,6 @@
 ﻿using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
+using HomeLib.API.Model.DataRequest.Track;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,13 @@ public class TrackController(ITrackService trackService) : ControllerBase
     public async Task<IActionResult> GetAllTracks()
     {
         var tracks = await trackService.GetAllTracks();
-        var tracksResponse = tracks.Select(track => new TrackResponse()
+        var tracksResponse = tracks.Select(t => new TrackResponse()
         {
-            Name = track.Name,
-            Artist = track.Artist?.Name,
-            Album = track.Album?.Name,
-            Duration = track.Duration,
-            TrackId = track.Id,
+            Name = t.Name,
+            ArtistId = t.TrackArtists.Select(ta => ta.Artist?.Name).FirstOrDefault(),
+            AlbumId = t.Album?.Name,
+            Duration = t.Duration,
+            TrackId = t.Id,
         }).ToList();
 
         return Ok(tracksResponse);
@@ -34,13 +35,27 @@ public class TrackController(ITrackService trackService) : ControllerBase
         var trackResponse = new TrackResponse()
         {
             Name = track.Name,
-            Artist = track.Artist?.Name,
-            Album = track.Album?.Name,
+            ArtistId = track.TrackArtists.Select(t => t.Artist?.Name).FirstOrDefault(),
+            AlbumId = track.Album?.Name,
             Duration = track.Duration,
-            TrackId = track.Id,
         };
 
         return Ok(trackResponse);
+    }
+
+    [HttpGet("new_track")]
+    public async Task<IActionResult> GetNewTracks([FromBody] NewTracksRequest newTracksCount)
+    {
+        var tracks = await trackService.GetNewTracks(newTracksCount.Count);
+        var tracksResponse = tracks.Select(t => new TrackResponse()
+        {
+            Name = t.Name,
+            ArtistId = t.TrackArtists.Select(t => t.Artist?.Name).FirstOrDefault(),
+            AlbumId = t.Album?.Name,
+            Duration = t.Duration,
+            TrackId = t.Id,
+        }).ToList();
+        return Ok(tracksResponse);
     }
 
     [HttpPost]
@@ -50,9 +65,10 @@ public class TrackController(ITrackService trackService) : ControllerBase
             trackRequest.Name,
             trackRequest.AlbumId,
             trackRequest.ArtistId,
-            trackRequest.Duration);
+            trackRequest.Duration
+        );
 
-        return Created("api/track", trackRequest);
+        return Created("api/new_track", trackRequest);
     }
 
     [HttpPut("{id:guid}")]
@@ -62,10 +78,18 @@ public class TrackController(ITrackService trackService) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteTrack(Guid id)
+    // Carefully
+    [HttpDelete("{id:guid}/hard_delete")]
+    public async Task<IActionResult> HardDeleteTrack(Guid id)
     {
-        await trackService.DeleteTrack(id);
+        await trackService.HardDeleteTrack(id);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> SoftDeleteTrack(Guid id)
+    {
+        await trackService.SoftDeleteTrack(id);
         return NoContent();
     }
 }

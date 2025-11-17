@@ -4,6 +4,6 @@ namespace HomeLib.API.Model.DataRequest;
 
 public class PlaylistRequest
 {
-    [Required]
+    [Required(ErrorMessage = "Name is required")]
     public string Name { get; set; } = string.Empty;
 }

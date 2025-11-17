@@ -1,12 +1,13 @@
 ﻿namespace HomeLib.Core.Model;
 
-public class UserPlaylists
+public sealed class UserPlaylists
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public Guid UserId { get; set; }
 
-    public virtual User User { get; set; } = null!;
-    public virtual ICollection<PlaylistTracks> PlaylistTracks { get; set; } = new List<PlaylistTracks>();
+    public User User { get; set; } = null!;
+    public ICollection<PlaylistTracks> PlaylistTracks { get; set; } = new List<PlaylistTracks>();
 }

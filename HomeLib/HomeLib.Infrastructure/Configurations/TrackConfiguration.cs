@@ -11,16 +11,8 @@ public class TrackConfiguration : IEntityTypeConfiguration<Track>
     {
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(t => t.Artist)
-            .WithMany(artist => artist.Tracks)
-            .HasForeignKey(t => t.ArtistId);
-
         builder.HasOne(t => t.Album)
-            .WithMany(album => album.Tracks)
+            .WithMany(a => a.Tracks)
             .HasForeignKey(t => t.AlbumId);
-        
-        builder.HasMany(t => t.PlaylistTrack)
-            .WithOne(p => p.Track)
-            .HasForeignKey(t => t.TrackId);
     }
 }

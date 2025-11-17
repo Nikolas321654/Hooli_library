@@ -7,6 +7,8 @@ public interface IAlbumRepository
     public Task<List<Album>> GetAllAlbumsAsync();
     public Task<Album?> GetAlbumByIdAsync(Guid id);
     public Task AddAlbumAsync(Album album);
-    public Task DeleteAlbumAsync(Guid id);
+    public Task HardDeleteAlbumAsync(Guid id);
     public Task UpdateAlbumAsync(Album album);
+    public Task<List<Album>> GetAllDeletedAlbumsAsync();
+    public Task<List<Album>> GetNewAlbums(int count);
 }

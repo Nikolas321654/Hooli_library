@@ -10,7 +10,7 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
 {
     public async Task<Album> GetAlbumById(Guid id)
     {
-        if(id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
+        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
         var album = await albumRepository.GetAlbumByIdAsync(id);
         return album ?? throw new NotFoundException($"Album with {id} id not found");
     }
@@ -20,13 +20,26 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
         return await albumRepository.GetAllAlbumsAsync();
     }
 
-    public async Task DeleteAlbum(Guid id)
+    public async Task HardDeleteAlbum(Guid id)
     {
-        if(id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
+        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
         var album = await albumRepository.GetAlbumByIdAsync(id);
         if (album == null) throw new NotFoundException($"Album with {id} id not found");
-        await albumRepository.DeleteAlbumAsync(id);
+        await albumRepository.HardDeleteAlbumAsync(id);
     }
+
+    public async Task SoftDeleteAlbum(Guid id)
+    {
+        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
+        var album = await albumRepository.GetAlbumByIdAsync(id);
+        if (album == null) throw new NotFoundException($"Album with {id} id not found");
+
+        album.IsDeleted = true;
+        album.UpdatedAt = DateTime.UtcNow;
+
+        await albumRepository.UpdateAlbumAsync(album);
+    }
+
 
     public async Task AddAlbum(string name, int year, Guid artistId)
     {
@@ -35,7 +48,10 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
             Id = Guid.NewGuid(),
             Name = name,
             Year = year,
-            ArtistId = artistId
+            ArtistId = artistId,
+            IsDeleted = false,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         await albumRepository.AddAlbumAsync(album);
@@ -43,12 +59,18 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
 
     public async Task UpdateAlbum(Guid id, string name, int year)
     {
-        if(id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
+        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
         var album = await albumRepository.GetAlbumByIdAsync(id);
         if (album == null) throw new NotFoundException($"Album with {id} id not found");
-        
+
         album.Name = name;
         album.Year = year;
+        album.UpdatedAt = DateTime.UtcNow;
         await albumRepository.UpdateAlbumAsync(album);
+    }
+
+    public async Task<List<Album>> GetNewAlbums(int count)
+    {
+        return await albumRepository.GetNewAlbums(count);
     }
 }

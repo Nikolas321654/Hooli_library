@@ -8,5 +8,6 @@ public interface IArtistsService
     public Task<Artist?> GetArtistById(Guid id);
     public Task UpdateArtist(string name, bool grammy, Guid id);
     public Task AddArtist(string name, bool grammy);
-    public Task DeleteArtist(Guid id);
+    public Task HardDeleteArtist(Guid id);
+    public Task SoftDeleteArtist(Guid id);
 }

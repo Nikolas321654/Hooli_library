@@ -20,6 +20,7 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
     {
         if (id == Guid.Empty) throw new BadRequestException("Invalid Id");
         var user = await usersRepository.GetUserByIdAsync(id);
+        
         return user ?? throw new NotFoundException($"User with {id} id not found");
     }
 
@@ -33,7 +34,8 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
             Id = Guid.NewGuid(),
             Name = name,
             Login = login,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         var hashPassword = new PasswordHasher<User>().HashPassword(user, password);
@@ -47,8 +49,8 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
     {
         var account = await usersRepository.GetUserByLoginAsync(login);
         if (account == null) throw new BadRequestException($"User with {login} login not found");
-
         var result = new PasswordHasher<User>().VerifyHashedPassword(account, account.Password, password);
+       
         return result == PasswordVerificationResult.Failed
             ? throw new BadRequestException("Invalid login or password")
             : jwtService.GenerateJwtToken(account);
@@ -59,6 +61,7 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
         if (id == Guid.Empty) throw new BadRequestException("Invalid id");
         var user = await usersRepository.GetUserByIdAsync(id);
         if (user == null) throw new NotFoundException($"User with {id} id not found");
+       
         await usersRepository.DeleteUserAsync(id);
     }
 

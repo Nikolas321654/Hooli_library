@@ -1,6 +1,6 @@
 ﻿namespace HomeLib.API.DataTypes.DataResponse;
 
-public class ArtistResponse
+public class ArtistAlbumsTracksResponse
 {
     public Guid ArtistId {get; set;} 
     public string Name { get; set; }
