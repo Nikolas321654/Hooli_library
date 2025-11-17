@@ -6,6 +6,7 @@
 
 - **Clean Architecture** implementation with separated layers (Core, Infrastructure, Services, API)
 - **Repository Pattern** for data access abstraction
+- **Soft Delete Pattern** for data
 - **Dependency Injection** for loose coupling
 - **RESTful API** design principles
 - **Database-first** approach with Entity Framework Core migrations
@@ -20,10 +21,15 @@
 - **PostgreSQL**
 - **Docker**
 
+## Packages NuGet 
+- **xunit** for tests
+- **PostgreSQL**
+- **EntityFrameworkCore**
+- **JwtBearer**
 
 ---
 ## 📊 Database diagram
-<img width="827" height="726" alt="image" src="https://github.com/user-attachments/assets/01a48b68-f7e6-4417-8589-1e20cc8faa2d" />
+![DiagramImg](DiagramImg.png)
 
 > 📄 Diagram file: `Hooli_Music.drawio` (open with [draw.io](https://draw.io))
 
@@ -49,10 +55,7 @@
 ## 📚 Literature
 
 - **Clean Code** — Robert C. Martin
-
 - **Clean Architecture** — Robert C. Martin
-
 - **Pro C# 10 with .NET 6: Foundational Principles and Practices in Programming** —  Andrew Troelsen, Phil Japikse
-
 - **Design Patterns: Elements of Reusable Object-Oriented Software** — Gang of Four (GoF)
 - **Learning PostgreSQL** - Salahaldin Juba, Achim Vannahme, Andrey Volkov
