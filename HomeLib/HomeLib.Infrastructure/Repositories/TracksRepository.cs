@@ -2,6 +2,7 @@
 using HomeLib.Core.Interfaces.ForRepositories;
 using HomeLib.Core.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HomeLib.Infrastructure.Repositories;
 
