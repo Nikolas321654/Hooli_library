@@ -10,6 +10,8 @@ public class UserPlaylistConfiguration : IEntityTypeConfiguration<UserPlaylists>
     public void Configure(EntityTypeBuilder<UserPlaylists> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.HasIndex(x => new { x.Name, x.CreatedAt });
+
 
         builder.HasMany(a => a.PlaylistTracks)
             .WithOne(x => x.UserPlaylists)

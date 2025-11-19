@@ -1,6 +1,6 @@
-# Hooli library
+# Hooli Music
 
-**Hooli library** is a university project that demonstrates the principles of clean architecture, design patterns, using **ASP.NET Core**, **Entity Framework** , and **PostgreSQL**. This service provides a comprehensive API for building personalized music libraries and managing associated metadata. 
+**Hooli Music** is a university project that demonstrates the principles of clean architecture, design patterns, using **ASP.NET Core**, **Entity Framework** , and **PostgreSQL**. This service provides a comprehensive API for building personalized music libraries and managing associated metadata. 
 
 ## 🎯 Project Overview
 
@@ -11,6 +11,7 @@
 - **RESTful API** design principles
 - **Database-first** approach with Entity Framework Core migrations
 - **Containerization** using Docker for simplified deployment
+- **Database tests**
 
 
 ## 🚀 Technologies
@@ -49,6 +50,10 @@
 
 **Stop:**
 `docker-compose down`
+
+**Start tests** 
+1. `docker run --name homelib-postgres-test -e POSTGRES_PASSWORD=123456789 -p 5432:5432 -d postgres` 
+2. `Start test in your's ide`    
 
 **(http://localhost:8080)**
 

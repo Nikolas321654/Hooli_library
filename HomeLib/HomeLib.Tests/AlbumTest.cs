@@ -1,6 +1,14 @@
-﻿namespace HomeLib.Tests;
+﻿using Microsoft.EntityFrameworkCore;
+using Xunit;
+using Xunit.Abstractions;
 
-public class AlbumTest
+namespace HomeLib.Tests;
+
+public class AlbumTest : IntegrationTestBase
 {
-    
+    [Fact]
+    public void InsertAlbumTest()
+    {
+        
+    }
 }

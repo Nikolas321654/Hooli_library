@@ -10,6 +10,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.HasIndex(x => x.Login).IsUnique();
+
 
         builder.HasMany(u => u.UserPlaylist)
             .WithOne(up => up.User)

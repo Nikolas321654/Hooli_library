@@ -10,6 +10,7 @@ public class TrackConfiguration : IEntityTypeConfiguration<Track>
     public void Configure(EntityTypeBuilder<Track> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.HasIndex(x => new {x.Name, x.CreatedAt} ).HasFilter("\"IsDeleted\" = false");
 
         builder.HasOne(t => t.Album)
             .WithMany(a => a.Tracks)

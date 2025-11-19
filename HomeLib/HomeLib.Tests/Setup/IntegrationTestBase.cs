@@ -8,9 +8,9 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     private IDbContextTransaction _transaction;
 
     private const string TestConnectionString =
-        "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=mysecretpassword";
+        "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=123456789";
 
-    private HomeLibDbContext Context { get; set; }
+    protected HomeLibDbContext Context { get; set; }
 
     public async Task InitializeAsync()
     {
