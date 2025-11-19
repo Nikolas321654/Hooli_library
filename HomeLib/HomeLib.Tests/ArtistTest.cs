@@ -25,7 +25,7 @@ public class ArtistTest : IntegrationTestBase
         var savedArtist = await Context.Artists.FindAsync(artistToInsert.Id);
         Assert.NotNull(savedArtist);
         Assert.Equal("TestArtist", savedArtist.Name);
-        Assert.Equal(true, savedArtist.Grammy);
+        Assert.True(savedArtist.Grammy);
         Assert.Equal(id, savedArtist.Id);
     }
 
@@ -78,17 +78,17 @@ public class ArtistTest : IntegrationTestBase
         await Context.Artists.AddAsync(artistToUpdate);
         await Context.SaveChangesAsync();
         var savedArtist = await Context.Artists.FindAsync(artistToUpdate.Id);
-
+        
+        Assert.NotNull(savedArtist);
         savedArtist.Name = "TestArtist2";
         savedArtist.Grammy = true;
         savedArtist.UpdatedAt = DateTime.UtcNow;
-
         await Context.SaveChangesAsync();
         var savedArtist2 = await Context.Artists.FindAsync(savedArtist.Id);
 
         Assert.NotNull(savedArtist2);
         Assert.Equal("TestArtist2", savedArtist2.Name);
-        Assert.Equal(true, savedArtist2.Grammy);
+        Assert.True(savedArtist2.Grammy);
         Assert.Equal(id, savedArtist2.Id);
     }
 
@@ -134,7 +134,7 @@ public class ArtistTest : IntegrationTestBase
         var savedArtist = await Context.Artists.FirstOrDefaultAsync(x => x.Name == artist.Name);
         Assert.NotNull(savedArtist);
         Assert.Equal("TestArtist", savedArtist.Name);
-        Assert.Equal(false, savedArtist.Grammy);
+        Assert.False(savedArtist.Grammy);
         Assert.Equal(id, savedArtist.Id);
     }
 }
