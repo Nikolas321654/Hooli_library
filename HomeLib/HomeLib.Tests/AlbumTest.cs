@@ -10,7 +10,7 @@ public class AlbumTest : IntegrationTestBase
     [Fact]
     public async Task CreateAlbum_ShouldCreateAlbum()
     {
-        Guid artistId = Guid.NewGuid();
+        var artistId = Guid.NewGuid();
         var artist = new Artist()
         {
             Id = artistId,
@@ -23,7 +23,7 @@ public class AlbumTest : IntegrationTestBase
         Context.Artists.Add(artist);
         await Context.SaveChangesAsync();
         
-        Guid id = Guid.NewGuid();
+        var id = Guid.NewGuid();
         var album = new Album
         {
             Id = id,
@@ -50,7 +50,7 @@ public class AlbumTest : IntegrationTestBase
     [Fact]
     public async Task DeleteAlbum_ShouldDeleteAlbum()
     {
-        Guid artistId = Guid.NewGuid();
+        var artistId = Guid.NewGuid();
         var artist = new Artist()
         {
             Id = artistId,
@@ -63,7 +63,7 @@ public class AlbumTest : IntegrationTestBase
         Context.Artists.Add(artist);
         await Context.SaveChangesAsync();
 
-        Guid id = Guid.NewGuid();
+        var id = Guid.NewGuid();
         var album = new Album
         {
             Id = id,
@@ -88,7 +88,7 @@ public class AlbumTest : IntegrationTestBase
     [Fact]
     public async Task UpdateAlbum_ShouldUpdateAlbum()
     {
-        Guid artistId = Guid.NewGuid();
+        var artistId = Guid.NewGuid();
         var artist = new Artist()
         {
             Id = artistId,
@@ -101,7 +101,7 @@ public class AlbumTest : IntegrationTestBase
         Context.Artists.Add(artist);
         await Context.SaveChangesAsync();
 
-        Guid albumId = Guid.NewGuid();
+        var albumId = Guid.NewGuid();
         var album = new Album
         {
             Id = albumId,
@@ -129,7 +129,7 @@ public class AlbumTest : IntegrationTestBase
     [Fact]
     public async Task SoftDeleteAlbum_ShouldSoftDeleteAlbum()
     {
-        Guid artistId = Guid.NewGuid();
+        var artistId = Guid.NewGuid();
         
         var artist = new Artist()
         {
@@ -143,7 +143,7 @@ public class AlbumTest : IntegrationTestBase
         Context.Artists.Add(artist);
         await Context.SaveChangesAsync();
 
-        Guid id = Guid.NewGuid();
+        var id = Guid.NewGuid();
         var album = new Album
         {
             Id = id,
@@ -171,7 +171,7 @@ public class AlbumTest : IntegrationTestBase
     [Fact]
     public async Task AddTrack_ShouldAddTrack()
     {
-        Guid artistId = Guid.NewGuid();
+        var artistId = Guid.NewGuid();
         
         var artist = new Artist()
         {
@@ -185,7 +185,7 @@ public class AlbumTest : IntegrationTestBase
         Context.Artists.Add(artist);
         await Context.SaveChangesAsync();
 
-        Guid albumId = Guid.NewGuid();
+        var albumId = Guid.NewGuid();
         var album = new Album
         {
             Id = albumId,
@@ -199,7 +199,7 @@ public class AlbumTest : IntegrationTestBase
         Context.Albums.Add(album);
         await Context.SaveChangesAsync();
 
-        Guid trackId = Guid.NewGuid();
+        var trackId = Guid.NewGuid();
         var track = new Track
         {
             Id = trackId,
