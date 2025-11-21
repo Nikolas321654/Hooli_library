@@ -7,7 +7,8 @@
       - "8080:8080"
     container_name: library_web_api
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=db;Database=HomeLibDataBase;Username=postgres;Password=1234
@@ -23,6 +24,11 @@
     volumes:
       - db_data:/var/lib/postgresql
     container_name: db_postgresql_library
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U postgres -d HomeLibDataBase"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db_data:

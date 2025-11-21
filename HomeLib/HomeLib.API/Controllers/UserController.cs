@@ -20,7 +20,7 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet]
+    [HttpGet("all_users")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await userService.GetAllUsers();
@@ -37,10 +37,10 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetUserById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> GetUserById()
     {
-        var user = await userService.GetUserById(id);
+        var user = await userService.GetUserById(GetUserId());
         var userResponse = new UserResponse()
         {
             UserId = user.Id,
@@ -81,6 +81,6 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> UpdateUser([FromBody] PasswordChange passwordChange)
     {
         await userService.UpdateUserPassword(GetUserId(), passwordChange.NewPassword, passwordChange.OldPassword);
-        return NoContent();
+        return Ok("Password changed");
     }
 }

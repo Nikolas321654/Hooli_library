@@ -16,10 +16,7 @@ public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylist
     public async Task<UserPlaylists> GetPlaylistById(Guid userId, Guid playlistId)
     {
         var playlist = await playlistRepository.GetPlaylistByIdAsync(userId, playlistId);
-        if (playlist == null) throw new NotFoundException($"Playlist with id: {playlistId}, not found");
-        playlist.PlaylistTracks = await playlistRepository.GetAllTracksAsync(userId, playlistId);
-
-        return playlist;
+        return playlist ?? throw new NotFoundException($"Playlist with id: {playlistId}, not found");
     }
 
     public async Task<UserPlaylists> AddPlaylist(Guid userId, string name)
@@ -63,7 +60,7 @@ public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylist
             throw new NotFoundException("Playlist not found");
 
         if (await playlistRepository.GetPlaylistTrackByIdAsync(userId, playlistId, trackId) != null)
-            throw new Exception("Track already exists");
+            throw new AlreadyAddedException("Track already exists");
 
         var maxPosition = await playlistRepository.GetMaxPositionAsync(playlistId);
 

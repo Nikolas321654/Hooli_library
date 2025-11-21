@@ -49,6 +49,22 @@ builder.Services.Configure<JsonOptions>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<HomeLibDbContext>();
+    try
+    {
+        Console.WriteLine("Applying migrations...");
+        dbContext.Database.Migrate();
+        Console.WriteLine("Migrations applied successfully!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+        throw;
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

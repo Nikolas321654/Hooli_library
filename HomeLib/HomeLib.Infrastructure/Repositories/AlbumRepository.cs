@@ -60,7 +60,7 @@ public class AlbumRepository(HomeLibDbContext context) : IAlbumRepository
         return await context.Albums
             .Include(ta => ta.Artist)
             .Where(t => t.IsDeleted == false)
-            .OrderByDescending(t => t.Year)
+            .OrderByDescending(t => t.CreatedAt)
             .Take(count)
             .ToListAsync();
     }

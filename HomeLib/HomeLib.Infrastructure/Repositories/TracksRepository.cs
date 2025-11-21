@@ -10,8 +10,7 @@ public class TracksRepository(HomeLibDbContext context) : ITrackRepository
 {
     public async Task<List<Track>> GetAllTracksAsync()
     {
-        return await context.Tracks.AsNoTracking()
-            .Include(t => t.TrackArtists)
+        return await context.Tracks.Include(t => t.TrackArtists)
             .ThenInclude(ta => ta.Artist)
             .Include(t => t.Album)
             .Where(t => t.IsDeleted == false)
@@ -67,7 +66,7 @@ public class TracksRepository(HomeLibDbContext context) : ITrackRepository
     public async Task<List<Track>> GetNewTracks(int count)
     {
         return await context.Tracks.Include(t => t.TrackArtists)
-            .ThenInclude(ta => ta.Artist)
+            .ThenInclude(tr => tr.Artist)
             .Include(t => t.Album)
             .Where(t => t.IsDeleted == false)
             .OrderByDescending(t => t.CreatedAt)

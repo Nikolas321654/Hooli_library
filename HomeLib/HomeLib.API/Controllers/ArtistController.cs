@@ -22,13 +22,13 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
             Name = artist.Name,
             Grammy = artist.Grammy,
         });
-        
+
         return Ok(artistsResponse);
     }
 
         [HttpGet("{id:guid}/albums_and_tracks")]
     public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id)
-    {   
+    {
         var artist = await artistService.GetArtistById(id);
         var artistResponse = new ArtistAlbumsTracksResponse
         {

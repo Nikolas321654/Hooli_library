@@ -19,8 +19,8 @@ public class TrackController(ITrackService trackService) : ControllerBase
         var tracksResponse = tracks.Select(t => new TrackResponse()
         {
             Name = t.Name,
-            ArtistId = t.TrackArtists.Select(ta => ta.Artist?.Name).FirstOrDefault(),
-            AlbumId = t.Album?.Name,
+            ArtistName = t.TrackArtists.Select(ta => ta.Artist?.Name).FirstOrDefault(),
+            AlbumName = t.Album?.Name,
             Duration = t.Duration,
             TrackId = t.Id,
         }).ToList();
@@ -35,23 +35,23 @@ public class TrackController(ITrackService trackService) : ControllerBase
         var trackResponse = new TrackResponse()
         {
             Name = track.Name,
-            ArtistId = track.TrackArtists.Select(t => t.Artist?.Name).FirstOrDefault(),
-            AlbumId = track.Album?.Name,
+            ArtistName = track.TrackArtists.Select(t => t.Artist?.Name).FirstOrDefault(),
+            AlbumName = track.Album?.Name,
             Duration = track.Duration,
         };
 
         return Ok(trackResponse);
     }
 
-    [HttpGet("new_track")]
-    public async Task<IActionResult> GetNewTracks([FromBody] NewTracksRequest newTracksCount)
+    [HttpGet("new_track/{count:int}")]
+    public async Task<IActionResult> GetNewTracks(int count)
     {
-        var tracks = await trackService.GetNewTracks(newTracksCount.Count);
+        var tracks = await trackService.GetNewTracks(count);
         var tracksResponse = tracks.Select(t => new TrackResponse()
         {
             Name = t.Name,
-            ArtistId = t.TrackArtists.Select(t => t.Artist?.Name).FirstOrDefault(),
-            AlbumId = t.Album?.Name,
+            ArtistName = t.TrackArtists.Select(ta => ta.Artist?.Name).FirstOrDefault(),
+            AlbumName = t.Album?.Name,
             Duration = t.Duration,
             TrackId = t.Id,
         }).ToList();
@@ -68,7 +68,7 @@ public class TrackController(ITrackService trackService) : ControllerBase
             trackRequest.Duration
         );
 
-        return Created("api/new_track", trackRequest);
+        return Ok("Created track");
     }
 
     [HttpPut("{id:guid}")]

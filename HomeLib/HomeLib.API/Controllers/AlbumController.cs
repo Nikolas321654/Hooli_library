@@ -95,10 +95,10 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("new_albums")]
-    public async Task<IActionResult> GetNewAlbums([FromBody] NewAlbumsRequest newAlbumsRequest)
+    [HttpGet("new_albums/{count:int}")]
+    public async Task<IActionResult> GetNewAlbums(int count)
     {
-        var albums = await albumService.GetNewAlbums(newAlbumsRequest.Count);
+        var albums = await albumService.GetNewAlbums(count);
         var albumsResponse = albums.Select(album => new AlbumResponse
         {
             AlbumId = album.Id,

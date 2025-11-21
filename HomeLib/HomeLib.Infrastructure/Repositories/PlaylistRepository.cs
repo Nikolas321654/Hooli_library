@@ -23,14 +23,6 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<PlaylistTracks>> GetAllTracksAsync(Guid userId, Guid playlistId)
-    {
-        return await context.PlaylistTracks
-            .Where(x => x.PlaylistId == playlistId && x.UserPlaylists.UserId == userId)
-            .Include(t => t.Track)
-            .ToListAsync();
-    }
-
     public async Task AddPlaylistsAsync(UserPlaylists playlistTracks)
     {
         await context.AddAsync(playlistTracks);
@@ -56,7 +48,9 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
     public async Task<PlaylistTracks?> GetPlaylistTrackByIdAsync(Guid userId, Guid playlistId, Guid trackId)
     {
         return await context.PlaylistTracks
-            .Where(x => x.PlaylistId == playlistId && x.UserPlaylists.UserId == userId)
+            .Where(x => x.PlaylistId == playlistId
+                        && x.UserPlaylists.UserId == userId
+                        && x.Track.IsDeleted == false)
             .Include(t => t.Track)
             .FirstOrDefaultAsync(x => x.TrackId == trackId);
     }
@@ -73,6 +67,7 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
             .Where(x =>
                 x.PlaylistId == playlistId
                 && x.TrackId == trackId
+                && x.Track.IsDeleted == false
                 && x.UserPlaylists.UserId == userId)
             .FirstOrDefaultAsync();
 
@@ -89,6 +84,7 @@ public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
             {
                 t.Position--;
             }
+
             await context.SaveChangesAsync();
         }
     }

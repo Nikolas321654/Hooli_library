@@ -35,7 +35,6 @@ public class UsersRepository(HomeLibDbContext context) : IUsersRepository
         if (user != null) context.Users.Remove(user);
         await context.SaveChangesAsync();
     }
-    
 
     public async Task SaveChangesAsync()
     {
