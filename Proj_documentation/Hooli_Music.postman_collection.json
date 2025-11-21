@@ -1,0 +1,1583 @@
+{
+	"info": {
+		"_postman_id": "03a1780f-adf3-43ae-9602-58dfb84b88cd",
+		"name": "Hooli_proj",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42631825",
+		"_collection_link": "https://red-space-794641-9752.postman.co/workspace/Hooli_lyb_main_proj~2378521f-88c9-4a05-80c5-2c8dadf4c0d7/collection/42631825-03a1780f-adf3-43ae-9602-58dfb84b88cd?action=share&source=collection_link&creator=42631825"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get user by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImQzZGZjMTQxLTExYTctNGU1YS1iYjMzLTUzYzlkODNlMzBhNiIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY0BnbWFpbC5jb20iLCJleHAiOjE3NjM2NzEwNjF9.8jQGkMchNwiiXVyCbqDSOyHDbGeC-U3SwTu1PKHHTSQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/user/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Register user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Login\": \"abcddf@gmail.com\",\n    \"Password\": \"123456\",\n    \"Name\": \"Niko\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update user password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcxMTgwfQ.7QcwCu4DMtbzvt7sqDV1-wF-BPoY1H6sp_WQmOQVj1s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"OldPassword\": \"123456\",\n    \"NewPassword\": \"1234567\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImQzZGZjMTQxLTExYTctNGU1YS1iYjMzLTUzYzlkODNlMzBhNiIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY0BnbWFpbC5jb20iLCJleHAiOjE3NjM2NzExMzF9.CbIOzGhl4c0c_iQLySMgkjX-CoqMbAjbHBjTXR6UoN0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Login user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Login\": \"abcd@gmail.com\",\r\n    \"Password\": \"1234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/login/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImQzZGZjMTQxLTExYTctNGU1YS1iYjMzLTUzYzlkODNlMzBhNiIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY0BnbWFpbC5jb20iLCJleHAiOjE3NjM2NzExMzF9.CbIOzGhl4c0c_iQLySMgkjX-CoqMbAjbHBjTXR6UoN0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/user/all_users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"all_users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Track",
+			"item": [
+				{
+					"name": "Get track",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5ODc0fQ.2CZyPM-PbuoZyB6D89QEFh-0veL7_-hABOV96GGs_eQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/track/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"track",
+								""
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Add track",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyNzM1fQ.w_Iy8tDM3NGM_H6RmOlLvSV8JpPwMQLIzqoAqbvi8p4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"name\": \"Bohemian Rhapsody\",\n//     \"duration\": 355,\n//     \"artistId\": \"90c61f49-68fd-400e-a2bd-92329efd621c\",\n//     \"albumId\": \"0c7b938c-5b3d-45c8-a227-1830d09fec1f\"\n// }\n// {\n//     \"name\": \"Come Together\",\n//     \"duration\": 259,\n//     \"artistId\": \"90c61f49-68fd-400e-a2bd-92329efd621c\",\n//     \"albumId\": \"3e320a9c-40d6-4148-baa5-ed3c043e6874\"\n// }\n  {\n    \"name\": \"Killer Queen\",\n    \"duration\": 229, \n    \"artistId\": \"e033fcfe-17fc-4b94-8bee-3a17e05df1fc\",\n    \"albumId\": \"14c9a802-b5be-4482-81f8-7c8d91a27d87\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/track/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"track",
+								""
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update track",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyNDE2fQ.HdP9JIipMTzZ51VbB-_rlPeIV_Yc73gFwiCvnLOeH5U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"No name\",\n    \"duration\": 1654 \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/track/3252abae-cb1e-46d9-a0b7-2a9c2c665cfd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"track",
+								"3252abae-cb1e-46d9-a0b7-2a9c2c665cfd"
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete track",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyNDE2fQ.HdP9JIipMTzZ51VbB-_rlPeIV_Yc73gFwiCvnLOeH5U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/track/528f100d-4a5f-4399-ac3c-043de41424ae",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"track",
+								"528f100d-4a5f-4399-ac3c-043de41424ae"
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Get track new tracks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjg0MDgyfQ.qSv4-Ps0wbNHR5-AZwzr2Cq52v5pzN0dLzLHtXDDvrg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/track/new_track/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"track",
+								"new_track",
+								"3"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Playlist",
+			"item": [
+				{
+					"name": "Delete track",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5ODc0fQ.2CZyPM-PbuoZyB6D89QEFh-0veL7_-hABOV96GGs_eQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"TrackId\": \"10d1f614-89fb-4761-a4f5-f7ee8ea01ba0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/75b8099e-cacb-4893-9571-6419acb070c3/tracks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								"75b8099e-cacb-4893-9571-6419acb070c3",
+								"tracks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all playlists",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5NTUzfQ.uRKh_iFnZ0MQBA0X0cA0vMDhPGm_4Ig3E6kdpqsAbrk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"TrackId\": \"69148e09-2e28-4dff-be0b-524ca2c5aafe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get playlist by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5ODc0fQ.2CZyPM-PbuoZyB6D89QEFh-0veL7_-hABOV96GGs_eQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/75b8099e-cacb-4893-9571-6419acb070c3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								"75b8099e-cacb-4893-9571-6419acb070c3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update playlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5NTUzfQ.uRKh_iFnZ0MQBA0X0cA0vMDhPGm_4Ig3E6kdpqsAbrk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"second\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/75b8099e-cacb-4893-9571-6419acb070c3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								"75b8099e-cacb-4893-9571-6419acb070c3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add playlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5NTUzfQ.uRKh_iFnZ0MQBA0X0cA0vMDhPGm_4Ig3E6kdpqsAbrk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"First\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete playlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5ODc0fQ.2CZyPM-PbuoZyB6D89QEFh-0veL7_-hABOV96GGs_eQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/75b8099e-cacb-4893-9571-6419acb070c3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								"75b8099e-cacb-4893-9571-6419acb070c3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add track",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc5ODc0fQ.2CZyPM-PbuoZyB6D89QEFh-0veL7_-hABOV96GGs_eQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"trackId\": \"10d1f614-89fb-4761-a4f5-f7ee8ea01ba0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user/playlist/75b8099e-cacb-4893-9571-6419acb070c3/tracks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user",
+								"playlist",
+								"75b8099e-cacb-4893-9571-6419acb070c3",
+								"tracks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Artist",
+			"item": [
+				{
+					"name": "Get artist with albums_and_tracks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyNzM1fQ.w_Iy8tDM3NGM_H6RmOlLvSV8JpPwMQLIzqoAqbvi8p4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/artist/e033fcfe-17fc-4b94-8bee-3a17e05df1fc/albums_and_tracks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								"e033fcfe-17fc-4b94-8bee-3a17e05df1fc",
+								"albums_and_tracks"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Get artist with albums",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyNzM1fQ.w_Iy8tDM3NGM_H6RmOlLvSV8JpPwMQLIzqoAqbvi8p4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/artist/e033fcfe-17fc-4b94-8bee-3a17e05df1fc/albums",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								"e033fcfe-17fc-4b94-8bee-3a17e05df1fc",
+								"albums"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Post artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcxMjE3fQ.IM4boila_s_PdnvQNvVfq7vux5la1UzWPVsKisEJIs8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"The Beatles\",\n    \"grammy\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/artist/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								""
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcxODUxfQ.pbjZzglxpgumaNpYWSvdNRfcB7lNHyc1S_j_K7eCvhQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Name\": \"Met\",\n    \"Grammy\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/artist/ae4147ce-b393-4409-84b6-f826a32fe515",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								"ae4147ce-b393-4409-84b6-f826a32fe515"
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcxNTI4fQ.aK7pvbmoXbp8vxXegSCtw_EoE-bOCll26Y6NaEcOQyc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/artist/57656b7e-5d74-4cb7-a5e9-80149f2b392e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								"57656b7e-5d74-4cb7-a5e9-80149f2b392e"
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all artists",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcxODUxfQ.pbjZzglxpgumaNpYWSvdNRfcB7lNHyc1S_j_K7eCvhQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/artist/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get artist with albums_and_tracks Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyNzM1fQ.w_Iy8tDM3NGM_H6RmOlLvSV8JpPwMQLIzqoAqbvi8p4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/artist/e033fcfe-17fc-4b94-8bee-3a17e05df1fc/albums_and_tracks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"artist",
+								"e033fcfe-17fc-4b94-8bee-3a17e05df1fc",
+								"albums_and_tracks"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Album",
+			"item": [
+				{
+					"name": "Get album",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjA1NWZlYWY2LThjM2UtNDdkMS1hZGNiLTNkMjI2YmRkMDQxYyIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImRhc2Fmc2dhZnNzZGTQsGRk0YBnQGdtYWlsLmNvbSIsImV4cCI6MTc2MzI0Mzk2NH0.Pi5kkpajIH3Jz7PYZBzuBB-qsxSGvA-8hYLm1jbrWz0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Name\": \"Hz\",\n    \"Year\": 45,\n    \"ArtistId\": \"6aaa08f9-ecf6-49d4-b5a1-1e0bfcdcabd2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/album/tracks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								"tracks"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Post album",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyMDY1fQ.fSXixU4w5Iw19vLcO5xeTxggZ_6zBDNSE1NfkXuhiiE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"name\": \"A Night at the Opera\",\r\n//     \"year\": 1975,\r\n//     \"artistId\": \"90c61f49-68fd-400e-a2bd-92329efd621c\"\r\n// }\r\n{\r\n    \"name\": \"Abbey Road\",\r\n    \"year\": 1969,\r\n    \"artistId\": \"e033fcfe-17fc-4b94-8bee-3a17e05df1fc\"\r\n}\r\n// {\r\n//     \"name\": \"The Resistance\",\r\n//     \"year\": 2009,\r\n//     \"artistId\": \"ae4147ce-b393-4409-84b6-f826a32fe515\"\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/album/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								""
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update album",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyMDY1fQ.fSXixU4w5Iw19vLcO5xeTxggZ_6zBDNSE1NfkXuhiiE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Pc\",\n    \"year\": 61\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/album/14c9a802-b5be-4482-81f8-7c8d91a27d87",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								"14c9a802-b5be-4482-81f8-7c8d91a27d87"
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete album",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyMDY1fQ.fSXixU4w5Iw19vLcO5xeTxggZ_6zBDNSE1NfkXuhiiE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/album/b7be6257-81e8-4130-b529-6e3cc55da831",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								"b7be6257-81e8-4130-b529-6e3cc55da831"
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all albums",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjcyMDY1fQ.fSXixU4w5Iw19vLcO5xeTxggZ_6zBDNSE1NfkXuhiiE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/album/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all albums tracks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjc3MTM5fQ.7-zbfl7dc9bEwxH5M0ALpH47QjKH_aViUAbxthPiRTU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/album/tracks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								"tracks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get album new_albums",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjY4NzVjNWVmLTYzNjUtNDc3ZC05NDIzLWZiMjQ4YzkzY2RkYSIsInVzZXJOYW1lIjoiTmlrbyIsInVzZXJMb2dpbiI6ImFiY2RAZ21haWwuY29tIiwiZXhwIjoxNzYzNjg0MDExfQ.lR_GZ3toPKkg6sR4xk4C78Cki4mhxoNn_qkiNuoLbyc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/album/new_albums/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"album",
+								"new_albums",
+								"1"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
