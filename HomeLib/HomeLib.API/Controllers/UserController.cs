@@ -58,6 +58,7 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var newUserId = await userService.RegisterUser(userRequest.Login, userRequest.Password, userRequest.Name);
         var token = await userService.Login(userRequest.Login, userRequest.Password);
+        
         return Created($"api/user/{newUserId}", new { BearerToken = token });
     }
 

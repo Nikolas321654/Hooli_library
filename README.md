@@ -2,38 +2,6 @@
 
 **Hooli Music** is a university project that demonstrates the principles of clean architecture, design patterns, using **ASP.NET Core**, **Entity Framework** , and **PostgreSQL**.
 This service provides a comprehensive API for building personalized music libraries and managing associated metadata.
-In this project, I implemented a lot of database operations and some complex queries that include joins, grouping, and filters in one request.
-Description of complex request :
-
-```csharp
-return await context.Tracks.Include(t => t.TrackArtists)
-            .ThenInclude(ta => ta.Artist)
-            .Include(t => t.Album)
-            .Where(t => t.IsDeleted == false)
-            .OrderByDescending(t => t.CreatedAt)
-            .Take(count)
-            .ToListAsync();
-````
-**Equivalent SQL:**
-
-```sql
-SELECT TOP (@count)
-    t.*,
-    a.*,
-    ar.*
-FROM Tracks t
-LEFT JOIN Albums a
-    ON t.AlbumId = a.Id
-LEFT JOIN TrackArtists ta
-    ON t.Id = ta.TrackId
-LEFT JOIN Artists ar
-    ON ta.ArtistId = ar.Id
-WHERE t.IsDeleted = 0
-ORDER BY t.CreatedAt DESC;
-```
-
-This query retrieves a specified number of the latest tracks (from 1 to 30).
-It also joins additional tables and uses their data to build a complete track information response.
 
 ## 🎯 Project Overview
 
@@ -63,9 +31,49 @@ It also joins additional tables and uses their data to build a complete track in
 
 ---
 ## 📊 Database diagram
-![DiagramImg](DiagramImg.png)
+![DiagramImg](Proj_documentation/DiagramImg.png)
 
 > 📄 Diagram file: `Hooli_Music.drawio` (open with [draw.io](https://draw.io))
+ 
+
+---
+## ✏️ More details
+
+In this project, I implemented a wide range of database operations, including complex queries with joins, grouping, and filtering within a single request.
+
+**Description of complex request:**
+
+```csharp
+return await context.Tracks.Include(t => t.TrackArtists)
+            .ThenInclude(ta => ta.Artist)
+            .Include(t => t.Album)
+            .Where(t => t.IsDeleted == false)
+            .OrderByDescending(t => t.CreatedAt)
+            .Take(count)
+            .ToListAsync();
+````
+**Equivalent SQL:**
+
+```sql
+SELECT TOP (@count)
+    t.*,
+    a.*,
+    ar.*
+FROM Tracks t
+LEFT JOIN Albums a ON t.AlbumId = a.Id
+LEFT JOIN TrackArtists ta ON t.Id = ta.TrackId
+LEFT JOIN Artists ar ON ta.ArtistId = ar.Id
+WHERE t.IsDeleted = 0
+ORDER BY t.CreatedAt DESC;
+```
+
+This query retrieves a specified number of the latest tracks (from 1 to 30).
+It also joins related tables and uses their data to construct a complete track information response.
+
+Additionally, I implemented database integration testing in the `HomeLib.Tests` project using a separate database running in a Docker container.  
+I also added custom exception handling, including:
+- Global exception-handling middleware
+- Custom exception classes
 
 ## ▶️ Installation
 

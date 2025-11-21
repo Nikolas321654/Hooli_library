@@ -25,6 +25,7 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
         if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
         var album = await albumRepository.GetAlbumByIdAsync(id);
         if (album == null) throw new NotFoundException($"Album with {id} id not found");
+       
         await albumRepository.HardDeleteAlbumAsync(id);
     }
 

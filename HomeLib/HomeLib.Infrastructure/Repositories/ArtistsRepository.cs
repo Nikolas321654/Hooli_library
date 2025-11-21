@@ -34,7 +34,7 @@ public class ArtistsRepository(HomeLibDbContext context) : IArtistRepository
             .Include(a => a.Albums)
             .Include(t => t.TrackArtists)
             .ThenInclude(ta => ta.Track)
-            .FirstOrDefaultAsync(x => x.Id == id &&  x.IsDeleted == false);
+            .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
     }
 
     public async Task AddArtistAsync(Artist artist)

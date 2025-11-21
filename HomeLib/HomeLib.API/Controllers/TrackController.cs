@@ -55,6 +55,7 @@ public class TrackController(ITrackService trackService) : ControllerBase
             Duration = t.Duration,
             TrackId = t.Id,
         }).ToList();
+        
         return Ok(tracksResponse);
     }
 
