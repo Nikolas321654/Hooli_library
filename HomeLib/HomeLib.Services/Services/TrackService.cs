@@ -8,20 +8,28 @@ namespace HomeLib.Services.Services;
 
 public class TrackService(ITrackRepository trackRepository) : ITrackService
 {
-    public async Task<List<Track>> GetAllTracks()
-    {
-        return await trackRepository.GetAllTracksAsync();
-    }
-
-    public async Task<Track> GetTrackById(Guid id)
+    private async Task<Track> CheckTrackExists(Guid id, CancellationToken cancellationToken = default)
     {
         if (id == Guid.Empty) throw new BadRequestException("Invalid track id");
-        var track = await trackRepository.GetTrackByIdAsync(id);
+        var track = await trackRepository.GetTrackByIdAsync(id, cancellationToken);
+        return track ?? throw new NotFoundException($"Track with {id} not found");
+    }
+
+    public async Task<List<Track>> GetAllTracks(CancellationToken cancellationToken = default)
+    {
+        return await trackRepository.GetAllTracksAsync(cancellationToken);
+    }
+
+    public async Task<Track> GetTrackById(Guid id, CancellationToken cancellationToken = default)
+    {
+        if (id == Guid.Empty) throw new BadRequestException("Invalid track id");
+        var track = await trackRepository.GetTrackByIdAsync(id, cancellationToken);
 
         return track ?? throw new NotFoundException($"Track with {id} not found");
     }
 
-    public async Task AddTrack(string name, Guid albumId, Guid artistId, int duration)
+    public async Task<Track> AddTrack(string name, Guid albumId, Guid artistId, int duration,
+        CancellationToken cancellationToken = default)
     {
         var track = new Track()
         {
@@ -29,7 +37,7 @@ public class TrackService(ITrackRepository trackRepository) : ITrackService
             Name = name,
             Duration = duration,
             AlbumId = albumId,
-            CreatedAt =  DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };
 
@@ -39,49 +47,42 @@ public class TrackService(ITrackRepository trackRepository) : ITrackService
             TrackId = track.Id,
             UpdatedAt = track.UpdatedAt,
         };
-        await trackRepository.AddTrackAsync(track, trackArtist);
+        await trackRepository.AddTrackAsync(track, trackArtist, cancellationToken);
+
+        return track;
     }
 
-    public async Task HardDeleteTrack(Guid id)
+    public async Task HardDeleteTrack(Guid id, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Invalid track id");
-        var track = await trackRepository.GetTrackByIdAsync(id);
-        if (track == null) throw new NotFoundException($"Track with {id} not found");
-        var trackInTrackArtist = await trackRepository.DeleteTrackArtistAsync(id);
-        if (trackInTrackArtist == null) throw new NotFoundException($"Track with {id} not found");
-
-        trackInTrackArtist.IsDeleted = true;
-
-        await trackRepository.DeleteTrackAsync(id);
+        await CheckTrackExists(id, cancellationToken);
+        await trackRepository.DeleteTrackArtistAsync(id, cancellationToken);
+        await trackRepository.DeleteTrackAsync(id, cancellationToken);
     }
 
-    public async Task SoftDeleteTrack(Guid id)
+
+    public async Task SoftDeleteTrack(Guid id, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Invalid track id");
-        var track = await trackRepository.GetTrackByIdAsync(id);
-        if (track == null) throw new NotFoundException($"Track with {id} not found");
+        var track = await CheckTrackExists(id, cancellationToken);
 
         track.IsDeleted = true;
         track.UpdatedAt = DateTime.UtcNow;
 
-        await trackRepository.UpdateTrackAsync(track);
+        await trackRepository.UpdateTrackAsync(track, cancellationToken);
     }
 
-    public async Task UpdateTrack(Guid id, string name, int duration)
+    public async Task UpdateTrack(Guid id, string name, int duration, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Invalid track id");
-        var track = await trackRepository.GetTrackByIdAsync(id);
-        if (track == null) throw new NotFoundException($"Track with {id} not found");
+        var track = await CheckTrackExists(id, cancellationToken);
 
         track.Name = name;
         track.Duration = duration;
         track.UpdatedAt = DateTime.UtcNow;
 
-        await trackRepository.UpdateTrackAsync(track);
+        await trackRepository.UpdateTrackAsync(track, cancellationToken);
     }
 
-    public async Task<List<Track>> GetNewTracks(int count)
+    public async Task<List<Track>> GetNewTracks(int count, CancellationToken cancellationToken = default)
     {
-        return await trackRepository.GetNewTracks(count);
+        return await trackRepository.GetNewTracks(count, cancellationToken);
     }
 }

@@ -13,9 +13,9 @@ namespace HomeLib.API.Artist;
 public class ArtistController(IArtistsService artistService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllArtists()
+    public async Task<IActionResult> GetAllArtists(CancellationToken cancellationToken)
     {
-        var artists = await artistService.GetAllArtists();
+        var artists = await artistService.GetAllArtists(cancellationToken);
         var artistsResponse = artists.Select(artist => new ArtistResponse()
         {
             ArtistId = artist.Id,
@@ -26,10 +26,10 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
         return Ok(artistsResponse);
     }
 
-        [HttpGet("{id:guid}/albums_and_tracks")]
-    public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id)
+    [HttpGet("{id:guid}/albums_and_tracks")]
+    public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id, CancellationToken cancellationToken)
     {
-        var artist = await artistService.GetArtistById(id);
+        var artist = await artistService.GetArtistById(id, cancellationToken);
         var artistResponse = new ArtistAlbumsTracksResponse
         {
             ArtistId = artist.Id,
@@ -54,9 +54,9 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     }
 
     [HttpGet("{id:guid}/albums")]
-    public async Task<IActionResult> GetArtistAlbums(Guid id)
+    public async Task<IActionResult> GetArtistAlbums(Guid id, CancellationToken cancellationToken)
     {
-        var artist = await artistService.GetArtistById(id);
+        var artist = await artistService.GetArtistById(id, cancellationToken);
         var artistResponse = new ArtistAlbumsResponse
         {
             ArtistId = artist.Id,
@@ -74,9 +74,9 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     }
 
     [HttpGet("{id:guid}/tracks")]
-    public async Task<IActionResult> GetArtistTracks(Guid id)
+    public async Task<IActionResult> GetArtistTracks(Guid id, CancellationToken cancellationToken)
     {
-        var artist = await artistService.GetArtistById(id);
+        var artist = await artistService.GetArtistById(id, cancellationToken);
         var artistResponse = new ArtistTracksResponse()
         {
             ArtistId = artist.Id,
@@ -94,31 +94,33 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddArtist([FromBody] ArtistRequest artistRequest)
+    public async Task<ActionResult> AddArtist(CancellationToken cancellationToken,
+        [FromBody] ArtistRequest artistRequest)
     {
-        await artistService.AddArtist(artistRequest.Name, artistRequest.Grammy);
+        await artistService.AddArtist(artistRequest.Name, artistRequest.Grammy, cancellationToken);
         return Created("api/artist", artistRequest);
     }
 
     // Carefully    
     [HttpDelete("{id:guid}/hard_delete")]
-    public async Task<ActionResult> HardDeleteArtist(Guid id)
+    public async Task<ActionResult> HardDeleteArtist(Guid id, CancellationToken cancellationToken)
     {
-        await artistService.HardDeleteArtist(id);
+        await artistService.HardDeleteArtist(id, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> SoftDeleteArtist(Guid id)
+    public async Task<ActionResult> SoftDeleteArtist(Guid id, CancellationToken cancellationToken)
     {
-        await artistService.SoftDeleteArtist(id);
+        await artistService.SoftDeleteArtist(id, cancellationToken);
         return NoContent();
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult> UpdateArtist(Guid id, [FromBody] ArtistRequest artistRequest)
+    public async Task<ActionResult> UpdateArtist(Guid id, CancellationToken cancellationToken,
+        [FromBody] ArtistRequest artistRequest)
     {
-        await artistService.UpdateArtist(artistRequest.Name, artistRequest.Grammy, id);
+        await artistService.UpdateArtist(artistRequest.Name, artistRequest.Grammy, id, cancellationToken);
         return NoContent();
     }
 }

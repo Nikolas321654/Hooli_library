@@ -12,9 +12,9 @@ namespace HomeLib.API.Album;
 public class AlbumController(IAlbumService albumService) : ControllerBase
 {
     [HttpGet("tracks")]
-    public async Task<IActionResult> GetAllAlbumsWithTracks()
+    public async Task<IActionResult> GetAllAlbumsWithTracks(CancellationToken cancellationToken)
     {
-        var albumsList = await albumService.GetAllAlbums();
+        var albumsList = await albumService.GetAllAlbums(cancellationToken);
         var albumsResponse = albumsList.Select(album => new AlbumResponse
         {
             AlbumId = album.Id,
@@ -32,9 +32,9 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAlbums()
+    public async Task<IActionResult> GetAllAlbums(CancellationToken cancellationToken)
     {
-        var albumsList = await albumService.GetAllAlbums();
+        var albumsList = await albumService.GetAllAlbums(cancellationToken);
         var albumsResponse = albumsList.Select(album => new AlbumResponse
         {
             AlbumId = album.Id,
@@ -47,9 +47,9 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetAlbumById(Guid id)
+    public async Task<IActionResult> GetAlbumById(Guid id, CancellationToken cancellationToken)
     {
-        var album = await albumService.GetAlbumById(id);
+        var album = await albumService.GetAlbumById(id, cancellationToken);
         var albumResponse = new AlbumResponse()
         {
             AlbumId = album.Id,
@@ -67,38 +67,39 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddAlbum([FromBody] AlbumRequest albumRequest)
+    public async Task<ActionResult> AddAlbum([FromBody] AlbumRequest albumRequest, CancellationToken cancellationToken)
     {
-        await albumService.AddAlbum(albumRequest.Name, albumRequest.Year, albumRequest.ArtistId);
-        return Created("api/album", albumRequest);
+        await albumService.AddAlbum(albumRequest.Name, albumRequest.Year, albumRequest.ArtistId, cancellationToken);
+        return Created($"api/album", albumRequest);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumRequest albumRequest)
+    public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumRequest albumRequest,
+        CancellationToken cancellationToken)
     {
-        await albumService.UpdateAlbum(id, albumRequest.Name, albumRequest.Year);
+        await albumService.UpdateAlbum(id, albumRequest.Name, albumRequest.Year, cancellationToken);
         return NoContent();
     }
 
     // Carefully    
     [HttpDelete("{id:guid}/hard_delete")]
-    public async Task<IActionResult> HardDeleteAlbum(Guid id)
+    public async Task<IActionResult> HardDeleteAlbum(Guid id, CancellationToken cancellationToken)
     {
-        await albumService.HardDeleteAlbum(id);
+        await albumService.HardDeleteAlbum(id, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> SoftDeleteAlbum(Guid id)
+    public async Task<IActionResult> SoftDeleteAlbum(Guid id, CancellationToken cancellationToken)
     {
-        await albumService.SoftDeleteAlbum(id);
+        await albumService.SoftDeleteAlbum(id, cancellationToken);
         return NoContent();
     }
 
     [HttpGet("new_albums/{count:int}")]
-    public async Task<IActionResult> GetNewAlbums(int count)
+    public async Task<IActionResult> GetNewAlbums(int count, CancellationToken cancellationToken)
     {
-        var albums = await albumService.GetNewAlbums(count);
+        var albums = await albumService.GetNewAlbums(count, cancellationToken);
         var albumsResponse = albums.Select(album => new AlbumResponse
         {
             AlbumId = album.Id,

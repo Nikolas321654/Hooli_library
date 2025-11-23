@@ -4,12 +4,12 @@ namespace HomeLib.Core.Interfaces.ForRepositories;
 
 public interface ITrackRepository
 {
-    public Task<List<Track>> GetAllTracksAsync();
-    public Task<Track?> GetTrackByIdAsync(Guid id);
-    public Task<List<Track>> GetAllDeletedTracksAsync();
-    public Task AddTrackAsync(Track track, TracksArtists trackArtist);
-    public Task DeleteTrackAsync(Guid id);
-    public Task UpdateTrackAsync(Track track);
-    public Task<TracksArtists?> DeleteTrackArtistAsync(Guid id);
-    public Task<List<Track>> GetNewTracks(int count);
+    public Task<List<Track>> GetAllTracksAsync(CancellationToken cancellationToken = default);
+    public Task<Track?> GetTrackByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task<List<Track>> GetAllDeletedTracksAsync(CancellationToken cancellationToken = default);
+    public Task AddTrackAsync(Track track, TracksArtists trackArtist, CancellationToken cancellationToken = default);
+    public Task DeleteTrackAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task UpdateTrackAsync(Track track, CancellationToken cancellationToken = default);
+    public Task<TracksArtists?> DeleteTrackArtistAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task<List<Track>> GetNewTracks(int count, CancellationToken cancellationToken = default);
 }

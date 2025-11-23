@@ -3,6 +3,7 @@ using System.Text.Json;
 using HomeLib.API.DataTypes;
 using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
+using HomeLib.Core.Exceptions;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +17,14 @@ public class UserController(IUserService userService) : ControllerBase
     private Guid GetUserId()
     {
         var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return id == null ? throw new Exception("User not found") : Guid.Parse(id);
+        return id == null ? throw new NotFoundException("User not found") : Guid.Parse(id);
     }
 
     [Authorize]
     [HttpGet("all_users")]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
     {
-        var users = await userService.GetAllUsers();
+        var users = await userService.GetAllUsers(cancellationToken);
         var userResponse = users.Select(user => new UserResponse()
         {
             UserId = user.Id,
@@ -38,9 +39,9 @@ public class UserController(IUserService userService) : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetUserById()
+    public async Task<IActionResult> GetUserById(CancellationToken cancellationToken)
     {
-        var user = await userService.GetUserById(GetUserId());
+        var user = await userService.GetUserById(GetUserId(), cancellationToken);
         var userResponse = new UserResponse()
         {
             UserId = user.Id,
@@ -54,34 +55,41 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] UserRequest userRequest)
+    public async Task<IActionResult> RegisterUser(CancellationToken cancellationToken,
+        [FromBody] UserRequest userRequest)
     {
-        var newUserId = await userService.RegisterUser(userRequest.Login, userRequest.Password, userRequest.Name);
-        var token = await userService.Login(userRequest.Login, userRequest.Password);
-        
+        var newUserId = await userService.RegisterUser(
+            userRequest.Login,
+            userRequest.Password,
+            userRequest.Name,
+            cancellationToken);
+        var token = await userService.Login(userRequest.Login, userRequest.Password, cancellationToken);
+
         return Created($"api/user/{newUserId}", new { BearerToken = token });
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginUser([FromBody] UserLogin userLogin)
+    public async Task<IActionResult> LoginUser(CancellationToken cancellationToken, [FromBody] UserLogin userLogin)
     {
-        var token = await userService.Login(userLogin.Login, userLogin.Password);
+        var token = await userService.Login(userLogin.Login, userLogin.Password, cancellationToken);
         return Ok(new { BearerToken = token });
     }
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteUser()
+    public async Task<IActionResult> DeleteUser(CancellationToken cancellationToken)
     {
-        await userService.DeleteUserAsync(GetUserId());
+        await userService.DeleteUserAsync(GetUserId(), cancellationToken);
         return NoContent();
     }
 
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody] PasswordChange passwordChange)
+    public async Task<IActionResult> UpdateUser(CancellationToken cancellationToken,
+        [FromBody] PasswordChange passwordChange)
     {
-        await userService.UpdateUserPassword(GetUserId(), passwordChange.NewPassword, passwordChange.OldPassword);
+        await userService.UpdateUserPassword(GetUserId(), passwordChange.NewPassword,
+            passwordChange.OldPassword, cancellationToken);
         return Ok("Password changed");
     }
 }

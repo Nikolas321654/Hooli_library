@@ -1,5 +1,4 @@
-﻿using HomeLib.Core;
-using HomeLib.Core.Exceptions;
+﻿using HomeLib.Core.Exceptions;
 using HomeLib.Core.Interfaces;
 using HomeLib.Core.Interfaces.ForRepositories;
 using HomeLib.Core.Model;
@@ -8,20 +7,27 @@ namespace HomeLib.Services.Services;
 
 public class ArtistService(IArtistRepository artistRepository) : IArtistsService
 {
-    public async Task<List<Artist>> GetAllArtists()
+    private async Task<Artist> CheackArtistExist(Guid id, CancellationToken cancellationToken = default)
     {
-        return await artistRepository.GetAllArtistAsync();
+        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
+        var artist = await artistRepository.GetArtistByIdAsync(id, cancellationToken);
+        return artist ?? throw new NotFoundException($"Artist with {id} id not found");
     }
 
-    public async Task<Artist?> GetArtistById(Guid id)
+    public async Task<List<Artist>> GetAllArtists(CancellationToken cancellationToken = default)
+    {
+        return await artistRepository.GetAllArtistAsync(cancellationToken);
+    }
+
+    public async Task<Artist?> GetArtistById(Guid id, CancellationToken cancellationToken = default)
     {
         if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
 
-        return await artistRepository.GetArtistByIdAsync(id) ??
+        return await artistRepository.GetArtistByIdAsync(id, cancellationToken) ??
                throw new NotFoundException($"Artist with {id} id not found");
     }
 
-    public async Task AddArtist(string name, bool grammy)
+    public async Task AddArtist(string name, bool grammy, CancellationToken cancellationToken = default)
     {
         var artist = new Artist()
         {
@@ -33,39 +39,32 @@ public class ArtistService(IArtistRepository artistRepository) : IArtistsService
             IsDeleted = false
         };
 
-        await artistRepository.AddArtistAsync(artist);
+        await artistRepository.AddArtistAsync(artist, cancellationToken);
     }
 
-    public async Task HardDeleteArtist(Guid id)
+    public async Task HardDeleteArtist(Guid id, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var artist = await artistRepository.GetArtistByIdAsync(id);
-        if (artist == null) throw new NotFoundException($"Artist with {id} id not found");
-        await artistRepository.HardDeleteArtistAsync(id);
+        await CheackArtistExist(id, cancellationToken);
+        await artistRepository.HardDeleteArtistAsync(id, cancellationToken);
     }
 
-    public async Task UpdateArtist(string name, bool grammy, Guid id)
+    public async Task UpdateArtist(string name, bool grammy, Guid id, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var artist = await artistRepository.GetArtistByIdAsync(id);
-        if (artist == null) throw new NotFoundException($"Artist with {id} id not found");
+        var artist = await CheackArtistExist(id, cancellationToken);
 
         artist.Name = name;
         artist.Grammy = grammy;
         artist.UpdatedAt = DateTime.UtcNow;
 
-        await artistRepository.UpdateArtistAsync(artist);
+        await artistRepository.UpdateArtistAsync(artist, cancellationToken);
     }
 
-    public async Task SoftDeleteArtist(Guid id)
+    public async Task SoftDeleteArtist(Guid id, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var artist = await artistRepository.GetArtistByIdAsync(id);
-        if (artist == null) throw new NotFoundException($"Artist with {id} id not found");
-
+        var artist = await CheackArtistExist(id, cancellationToken);
         artist.IsDeleted = true;
         artist.UpdatedAt = DateTime.UtcNow;
 
-        await artistRepository.UpdateArtistAsync(artist);
+        await artistRepository.UpdateArtistAsync(artist, cancellationToken);
     }
 }

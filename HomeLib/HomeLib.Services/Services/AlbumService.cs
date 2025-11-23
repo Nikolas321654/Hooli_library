@@ -1,5 +1,4 @@
-﻿using HomeLib.Core;
-using HomeLib.Core.Exceptions;
+﻿using HomeLib.Core.Exceptions;
 using HomeLib.Core.Interfaces;
 using HomeLib.Core.Interfaces.ForRepositories;
 using HomeLib.Core.Model;
@@ -8,45 +7,49 @@ namespace HomeLib.Services.Services;
 
 public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
 {
-    public async Task<Album> GetAlbumById(Guid id)
+    private async Task<Album> CheackAlbumExist(Guid id, CancellationToken cancellationToken = default)
     {
         if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var album = await albumRepository.GetAlbumByIdAsync(id);
+        var album = await albumRepository.GetAlbumByIdAsync(id, cancellationToken);
         return album ?? throw new NotFoundException($"Album with {id} id not found");
     }
 
-    public async Task<List<Album>> GetAllAlbums()
-    {
-        return await albumRepository.GetAllAlbumsAsync();
-    }
-
-    public async Task HardDeleteAlbum(Guid id)
+    public async Task<Album> GetAlbumById(Guid id, CancellationToken cancellationToken = default)
     {
         if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var album = await albumRepository.GetAlbumByIdAsync(id);
-        if (album == null) throw new NotFoundException($"Album with {id} id not found");
-       
-        await albumRepository.HardDeleteAlbumAsync(id);
+        var album = await albumRepository.GetAlbumByIdAsync(id, cancellationToken);
+        return album ?? throw new NotFoundException($"Album with {id} id not found");
     }
 
-    public async Task SoftDeleteAlbum(Guid id)
+    public async Task<List<Album>> GetAllAlbums(CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var album = await albumRepository.GetAlbumByIdAsync(id);
-        if (album == null) throw new NotFoundException($"Album with {id} id not found");
+        return await albumRepository.GetAllAlbumsAsync(cancellationToken);
+    }
+
+    public async Task HardDeleteAlbum(Guid id, CancellationToken cancellationToken = default)
+    {
+        await CheackAlbumExist(id, cancellationToken);
+        await albumRepository.HardDeleteAlbumAsync(id, cancellationToken);
+    }
+
+    public async Task SoftDeleteAlbum(Guid id, CancellationToken cancellationToken = default)
+    {
+        var album = await CheackAlbumExist(id, cancellationToken);
 
         album.IsDeleted = true;
         album.UpdatedAt = DateTime.UtcNow;
 
-        await albumRepository.UpdateAlbumAsync(album);
+        await albumRepository.UpdateAlbumAsync(album, cancellationToken);
     }
 
 
-    public async Task AddAlbum(string name, int year, Guid artistId)
+    public async Task<Guid> AddAlbum(string name, int year, Guid artistId,
+        CancellationToken cancellationToken = default)
     {
+        var newId = Guid.NewGuid();
         var album = new Album()
         {
-            Id = Guid.NewGuid(),
+            Id = newId,
             Name = name,
             Year = year,
             ArtistId = artistId,
@@ -55,23 +58,22 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
             UpdatedAt = DateTime.UtcNow
         };
 
-        await albumRepository.AddAlbumAsync(album);
+        await albumRepository.AddAlbumAsync(album, cancellationToken);
+        return newId;
     }
 
-    public async Task UpdateAlbum(Guid id, string name, int year)
+    public async Task UpdateAlbum(Guid id, string name, int year, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Id cannot be empty");
-        var album = await albumRepository.GetAlbumByIdAsync(id);
-        if (album == null) throw new NotFoundException($"Album with {id} id not found");
+        var album = await CheackAlbumExist(id, cancellationToken);
 
         album.Name = name;
         album.Year = year;
         album.UpdatedAt = DateTime.UtcNow;
-        await albumRepository.UpdateAlbumAsync(album);
+        await albumRepository.UpdateAlbumAsync(album, cancellationToken);
     }
 
-    public async Task<List<Album>> GetNewAlbums(int count)
+    public async Task<List<Album>> GetNewAlbums(int count, CancellationToken cancellationToken = default)
     {
-        return await albumRepository.GetNewAlbums(count);
+        return await albumRepository.GetNewAlbums(count, cancellationToken);
     }
 }

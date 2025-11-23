@@ -8,54 +8,53 @@ namespace HomeLib.Infrastructure.Repositories;
 
 public class ArtistsRepository(HomeLibDbContext context) : IArtistRepository
 {
-    public async Task<List<Artist>> GetAllArtistAsync()
+    public async Task<List<Artist>> GetAllArtistAsync(CancellationToken cancellationToken = default)
     {
-        return await context.Artists
+        return await context.Artists.AsNoTracking()
             .Include(a => a.Albums)
             .Include(a => a.TrackArtists)
             .ThenInclude(ta => ta.Track)
             .Where(a => a.IsDeleted == false)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Artist>> GetAllDeletedArtistAsync()
+    public async Task<List<Artist>> GetAllDeletedArtistAsync(CancellationToken cancellationToken = default)
     {
-        return await context.Artists
+        return await context.Artists.AsNoTracking()
             .Include(a => a.Albums)
             .Include(a => a.TrackArtists)
             .ThenInclude(ta => ta.Track)
             .Where(a => a.IsDeleted == true)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
-    
-    public async Task<Artist?> GetArtistByIdAsync(Guid id)
+
+    public async Task<Artist?> GetArtistByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await context.Artists
             .Include(a => a.Albums)
             .Include(t => t.TrackArtists)
             .ThenInclude(ta => ta.Track)
-            .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
+            .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false, cancellationToken);
     }
 
-    public async Task AddArtistAsync(Artist artist)
+    public async Task AddArtistAsync(Artist artist, CancellationToken cancellationToken = default)
     {
-        await context.Artists.AddAsync(artist);
-        await context.SaveChangesAsync();
+        await context.Artists.AddAsync(artist, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateArtistAsync(Artist artist)
+    public async Task UpdateArtistAsync(Artist artist, CancellationToken cancellationToken = default)
     {
-        context.Artists.Update(artist);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task HardDeleteArtistAsync(Guid id)
+    public async Task HardDeleteArtistAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var artist = await context.Artists.FindAsync(id);
+        var artist = await context.Artists.FindAsync([id], cancellationToken);
         if (artist != null)
         {
             context.Artists.Remove(artist);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

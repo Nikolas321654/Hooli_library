@@ -48,6 +48,11 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
                 errorResponse.Details = "Already Added";
                 logger.LogError(exception, exception.Message);
                 break;
+            case UnauthorizedException: 
+                response.StatusCode = StatusCodes.Status401Unauthorized;
+                errorResponse.Details = "Unauthorized";
+                logger.LogError(exception, exception.Message);
+                break;
             default:
                 response.StatusCode = StatusCodes.Status500InternalServerError;
                 errorResponse.Details = exception.Message;

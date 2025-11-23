@@ -11,22 +11,30 @@ namespace HomeLib.Services.Services;
 
 public class UserService(IUsersRepository usersRepository, JwtService jwtService) : IUserService
 {
-    public async Task<List<User>> GetAllUsers()
+    private async Task<User?> CheackUserExist(Guid id, CancellationToken cancellationToken = default)
     {
-        return await usersRepository.GetAllUsersAsync();
+        if (id == Guid.Empty) throw new BadRequestException("Invalid id");
+        var user = await usersRepository.GetUserByIdAsync(id, cancellationToken);
+        return user ?? throw new NotFoundException($"Invalid login or password");
     }
 
-    public async Task<User?> GetUserById(Guid id)
+    public async Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
+    {
+        return await usersRepository.GetAllUsersAsync(cancellationToken);
+    }
+
+    public async Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default)
     {
         if (id == Guid.Empty) throw new BadRequestException("Invalid Id");
-        var user = await usersRepository.GetUserByIdAsync(id);
-        
+        var user = await usersRepository.GetUserByIdAsync(id, cancellationToken);
+
         return user ?? throw new NotFoundException($"User with {id} id not found");
     }
 
-    public async Task<Guid> RegisterUser(string login, string password, string name)
+    public async Task<Guid> RegisterUser(string login, string password, string name,
+        CancellationToken cancellationToken = default)
     {
-        var existingUser = await usersRepository.GetUserByLoginAsync(login);
+        var existingUser = await usersRepository.GetUserByLoginAsync(login, cancellationToken);
         if (existingUser != null) throw new AlreadyAddedException($"User already with {login} login exists");
 
         var user = new User
@@ -40,37 +48,53 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
 
         var hashPassword = new PasswordHasher<User>().HashPassword(user, password);
         user.Password = hashPassword;
-        await usersRepository.AddUserAsync(user);
+        await usersRepository.AddUserAsync(user, cancellationToken);
 
         return user.Id;
     }
 
-    public async Task<string> Login(string login, string password)
+    public async Task<string> Login(string login, string password, CancellationToken cancellationToken = default)
     {
-        var account = await usersRepository.GetUserByLoginAsync(login);
-        if (account == null) throw new BadRequestException($"User with {login} login not found");
+        var account = await usersRepository.GetUserByLoginAsync(login, cancellationToken);
+        if (account == null) throw new BadRequestException("Invalid login or password");
         var result = new PasswordHasher<User>().VerifyHashedPassword(account, account.Password, password);
-       
+
         return result == PasswordVerificationResult.Failed
             ? throw new BadRequestException("Invalid login or password")
             : jwtService.GenerateJwtToken(account);
     }
 
-    public async Task DeleteUserAsync(Guid id)
+    public async Task DeleteUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Invalid id");
-        var user = await usersRepository.GetUserByIdAsync(id);
-        if (user == null) throw new NotFoundException($"User with {id} id not found");
-       
-        await usersRepository.DeleteUserAsync(id);
+        await CheackUserExist(id, cancellationToken);
+        await usersRepository.DeleteUserAsync(id, cancellationToken);
     }
 
-    public async Task UpdateUserPassword(Guid id, string newPassword, string oldPassword)
+    public async Task UpdateUserPassword(Guid id, string newPassword, string oldPassword,
+        CancellationToken cancellationToken = default)
     {
-        if (id == Guid.Empty) throw new BadRequestException("Invalid id");
-        var user = await usersRepository.GetUserByIdAsync(id);
-        if (user == null) throw new NotFoundException($"User with {id} not found");
+        if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(oldPassword))
+            throw new BadRequestException("Invalid password");
 
+        switch (newPassword.Length)
+        {
+            case < 6:
+                throw new BadRequestException("Password must be at least 6 characters long");
+            case > 12:
+                throw new BadRequestException("Password must be at most 12 characters long");
+        }
+
+        switch (oldPassword.Length)
+        {
+            case < 6:
+                throw new BadRequestException("Password must be at least 6 characters long");
+            case > 12:
+                throw new BadRequestException("Password must be at most 12 characters long");
+        }
+
+        if (id == Guid.Empty) throw new BadRequestException("Invalid id");
+
+        var user = await CheackUserExist(id, cancellationToken);
         var result = new PasswordHasher<User>().VerifyHashedPassword(user, user.Password, oldPassword);
         if (result == PasswordVerificationResult.Failed)
             throw new IncorrectOldPasswordException("Incorrect old password");
@@ -79,6 +103,6 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
         user.Password = hashPassword;
         user.UpdatedAt = DateTime.UtcNow;
 
-        await usersRepository.SaveChangesAsync();
+        await usersRepository.UpdateUserAsync(user, cancellationToken);
     }
 }

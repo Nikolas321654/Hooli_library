@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using HomeLib.API.DataTypes.DataResponse;
 using HomeLib.API.Model.DataRequest;
+using HomeLib.Core.Exceptions;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,13 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     private Guid GetUserId()
     {
         var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return id == null ? throw new Exception("User not found") : Guid.Parse(id);
+        return id == null ? throw new NotFoundException("User not found") : Guid.Parse(id);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllPlaylist()
+    public async Task<IActionResult> GetAllPlaylist(CancellationToken cancellationToken)
     {
-        var playlists = await playlistService.GetAllPlaylists(GetUserId());
+        var playlists = await playlistService.GetAllPlaylists(GetUserId(), cancellationToken);
 
         var playlistsResponse = playlists.Select(p => new PlaylistResponse
         {
@@ -34,9 +35,9 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     }
 
     [HttpGet("{playlistId:guid}")]
-    public async Task<IActionResult> GetPlaylistTracksById(Guid playlistId)
+    public async Task<IActionResult> GetPlaylistTracksById(Guid playlistId, CancellationToken cancellationToken)
     {
-        var playlist = await playlistService.GetPlaylistById(GetUserId(), playlistId);
+        var playlist = await playlistService.GetPlaylistById(GetUserId(), playlistId, cancellationToken);
 
         var playlistResponse = new PlaylistWithTracksResponse
         {
@@ -55,38 +56,42 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreatePlaylist([FromBody] PlaylistRequest playlistRequest)
+    public async Task<IActionResult> CreatePlaylist(CancellationToken cancellationToken,
+        [FromBody] PlaylistRequest playlistRequest)
     {
-        var newPlaylist = await playlistService.AddPlaylist(GetUserId(), playlistRequest.Name);
+        var newPlaylist = await playlistService.AddPlaylist(GetUserId(), playlistRequest.Name, cancellationToken);
         return Created($"api/user/playlist/{newPlaylist.Id}", newPlaylist);
     }
 
     [HttpDelete("{playlistId:Guid}")]
-    public async Task<IActionResult> DeletePlaylistById(Guid playlistId)
+    public async Task<IActionResult> DeletePlaylistById(Guid playlistId, CancellationToken cancellationToken)
     {
-        await playlistService.HardDeletePlaylist(GetUserId(), playlistId);
+        await playlistService.HardDeletePlaylist(GetUserId(), playlistId, cancellationToken);
         return NoContent();
     }
 
     [HttpPut("{playlistId:guid}")]
-    public async Task<IActionResult> UpdatePlaylistById(Guid playlistId, [FromBody] PlaylistRequest playlistRequest)
+    public async Task<IActionResult> UpdatePlaylistById(Guid playlistId, CancellationToken cancellationToken,
+        [FromBody] PlaylistRequest playlistRequest)
     {
-        await playlistService.UpdatePlaylist(GetUserId(), playlistId, playlistRequest.Name);
+        await playlistService.UpdatePlaylist(GetUserId(), playlistId, playlistRequest.Name, cancellationToken);
         return NoContent();
     }
 
     [HttpPost("{playlistId:Guid}/tracks")]
-    public async Task<IActionResult> AddTrack(Guid playlistId, [FromBody] TrackToPlayListRequest trackToPlayListRequest)
+    public async Task<IActionResult> AddTrack(Guid playlistId, CancellationToken cancellationToken,
+        [FromBody] TrackToPlayListRequest trackToPlayListRequest)
     {
-        await playlistService.AddTrack(GetUserId(), playlistId, trackToPlayListRequest.TrackId);
+        await playlistService.AddTrack(GetUserId(), playlistId, trackToPlayListRequest.TrackId, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{playlistId:guid}/tracks")]
     public async Task<IActionResult> DeleteTrack(Guid playlistId,
+        CancellationToken cancellationToken,
         [FromBody] TrackToPlayListRequest trackToPlayListRequest)
     {
-        await playlistService.DeleteTrack(GetUserId(), playlistId, trackToPlayListRequest.TrackId);
+        await playlistService.DeleteTrack(GetUserId(), playlistId, trackToPlayListRequest.TrackId, cancellationToken);
         return NoContent();
     }
 }

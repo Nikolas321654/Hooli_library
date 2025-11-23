@@ -4,10 +4,10 @@ namespace HomeLib.Core.Interfaces;
 
 public interface IArtistsService
 {
-    public Task<List<Artist>> GetAllArtists();
-    public Task<Artist?> GetArtistById(Guid id);
-    public Task UpdateArtist(string name, bool grammy, Guid id);
-    public Task AddArtist(string name, bool grammy);
-    public Task HardDeleteArtist(Guid id);
-    public Task SoftDeleteArtist(Guid id);
+    public Task<List<Artist>> GetAllArtists(CancellationToken cancellationToken);
+    public Task<Artist?> GetArtistById(Guid id, CancellationToken cancellationToken);
+    public Task UpdateArtist(string name, bool grammy, Guid id, CancellationToken cancellationToken);
+    public Task AddArtist(string name, bool grammy, CancellationToken cancellationToken);
+    public Task HardDeleteArtist(Guid id, CancellationToken cancellationToken);
+    public Task SoftDeleteArtist(Guid id, CancellationToken cancellationToken);
 }
