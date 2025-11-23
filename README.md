@@ -31,7 +31,7 @@ This service provides a comprehensive API for building personalized music librar
 
 ---
 ## 📊 Database diagram
-![DiagramImg](Proj_documentation/DiagramImg.png)
+![DiagramImg](docs/DiagramImg.png)
 
 > 📄 Diagram file: `Hooli_Music.drawio` (open with [draw.io](https://draw.io))
  
