@@ -8,23 +8,31 @@ namespace HomeLib.Infrastructure.Repositories;
 
 public class ArtistsRepository(HomeLibDbContext context) : IArtistRepository
 {
-    public async Task<List<Artist>> GetAllArtistAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Artist>> GetAllArtistAsync(int page, int pageSize,
+        CancellationToken cancellationToken = default)
     {
         return await context.Artists.AsNoTracking()
             .Include(a => a.Albums)
             .Include(a => a.TrackArtists)
             .ThenInclude(ta => ta.Track)
             .Where(a => a.IsDeleted == false)
+            .OrderBy(a => a.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Artist>> GetAllDeletedArtistAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Artist>> GetAllDeletedArtistAsync(int page, int pageSize,
+        CancellationToken cancellationToken = default)
     {
         return await context.Artists.AsNoTracking()
             .Include(a => a.Albums)
             .Include(a => a.TrackArtists)
             .ThenInclude(ta => ta.Track)
             .Where(a => a.IsDeleted == true)
+            .OrderBy(a => a.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 

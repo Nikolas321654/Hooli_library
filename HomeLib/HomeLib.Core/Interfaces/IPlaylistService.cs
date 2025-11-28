@@ -4,7 +4,9 @@ namespace HomeLib.Core.Interfaces;
 
 public interface IPlaylistService
 {
-    public Task<List<UserPlaylists>> GetAllPlaylists(Guid userId, CancellationToken cancellationToken);
+    public Task<List<UserPlaylists>> GetAllPlaylists(int page, int pageSize, Guid userId,
+        CancellationToken cancellationToken);
+
     public Task<UserPlaylists> GetPlaylistById(Guid userId, Guid playlistId, CancellationToken cancellationToken);
     public Task<UserPlaylists> AddPlaylist(Guid userId, string name, CancellationToken cancellationToken);
     public Task HardDeletePlaylist(Guid userId, Guid playlistId, CancellationToken cancellationToken);

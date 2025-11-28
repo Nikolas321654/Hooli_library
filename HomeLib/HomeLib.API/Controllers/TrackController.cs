@@ -1,5 +1,6 @@
 ﻿using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
+using HomeLib.API.Model.DataRequest;
 using HomeLib.API.Model.DataRequest.Track;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +14,10 @@ namespace HomeLib.API.Track;
 public class TrackController(ITrackService trackService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllTracks(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllTracks([FromBody] PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
     {
-        var tracks = await trackService.GetAllTracks(cancellationToken);
+        var tracks = await trackService.GetAllTracks(pagination.Page, pagination.PageSize, cancellationToken);
         var tracksResponse = tracks.Select(t => new TrackResponse()
         {
             Name = t.Name,

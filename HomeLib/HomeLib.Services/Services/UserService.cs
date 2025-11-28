@@ -18,9 +18,12 @@ public class UserService(IUsersRepository usersRepository, JwtService jwtService
         return user ?? throw new NotFoundException($"Invalid login or password");
     }
 
-    public async Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
+    public async Task<List<User>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await usersRepository.GetAllUsersAsync(cancellationToken);
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > 100) pageSize = 100;
+        return await usersRepository.GetAllUsersAsync(page, pageSize, cancellationToken);
     }
 
     public async Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default)

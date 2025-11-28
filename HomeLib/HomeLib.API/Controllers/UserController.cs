@@ -3,6 +3,7 @@ using System.Text.Json;
 using HomeLib.API.DataTypes;
 using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
+using HomeLib.API.Model.DataRequest;
 using HomeLib.Core.Exceptions;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -22,9 +23,10 @@ public class UserController(IUserService userService) : ControllerBase
 
     [Authorize]
     [HttpGet("all_users")]
-    public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUsers(PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
     {
-        var users = await userService.GetAllUsers(cancellationToken);
+        var users = await userService.GetAllUsers(pagination.Page, pagination.PageSize, cancellationToken);
         var userResponse = users.Select(user => new UserResponse()
         {
             UserId = user.Id,

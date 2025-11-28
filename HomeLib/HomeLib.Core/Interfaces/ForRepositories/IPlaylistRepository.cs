@@ -4,7 +4,8 @@ namespace HomeLib.Core.Interfaces.ForRepositories;
 
 public interface IPlaylistRepository
 {
-    public Task<List<UserPlaylists>> GetAllPlaylistsAsync(Guid userId, CancellationToken cancellationToken = default);
+    public Task<List<UserPlaylists>> GetAllPlaylistsAsync(int page, int pageSize, Guid userId,
+        CancellationToken cancellationToken = default);
 
     public Task<UserPlaylists?> GetPlaylistByIdAsync(Guid userId, Guid playlistId,
         CancellationToken cancellationToken = default);

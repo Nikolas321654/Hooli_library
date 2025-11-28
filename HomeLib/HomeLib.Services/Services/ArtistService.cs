@@ -14,9 +14,12 @@ public class ArtistService(IArtistRepository artistRepository) : IArtistsService
         return artist ?? throw new NotFoundException($"Artist with {id} id not found");
     }
 
-    public async Task<List<Artist>> GetAllArtists(CancellationToken cancellationToken = default)
+    public async Task<List<Artist>> GetAllArtists(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await artistRepository.GetAllArtistAsync(cancellationToken);
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > 100) pageSize = 100;
+        return await artistRepository.GetAllArtistAsync(page, pageSize,cancellationToken);
     }
 
     public async Task<Artist?> GetArtistById(Guid id, CancellationToken cancellationToken = default)

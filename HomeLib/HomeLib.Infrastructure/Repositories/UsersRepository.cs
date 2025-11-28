@@ -8,9 +8,14 @@ namespace HomeLib.Infrastructure.Repositories;
 
 public class UsersRepository(HomeLibDbContext context) : IUsersRepository
 {
-    public async Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken = default)
+    public async Task<List<User>> GetAllUsersAsync(int page, int pageSize,
+        CancellationToken cancellationToken = default)
     {
-        return await context.Users.AsNoTracking().ToListAsync(cancellationToken);
+        return await context.Users.AsNoTracking()
+            .OrderBy(u => u.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<User?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default)

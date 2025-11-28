@@ -8,23 +8,31 @@ namespace HomeLib.Infrastructure.Repositories;
 
 public class TracksRepository(HomeLibDbContext context) : ITrackRepository
 {
-    public async Task<List<Track>> GetAllTracksAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Track>> GetAllTracksAsync(int page, int pageSize,
+        CancellationToken cancellationToken = default)
     {
         return await context.Tracks.AsNoTracking()
             .Include(t => t.TrackArtists)
             .ThenInclude(ta => ta.Artist)
             .Include(t => t.Album)
             .Where(t => t.IsDeleted == false)
+            .OrderBy(t => t.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Track>> GetAllDeletedTracksAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Track>> GetAllDeletedTracksAsync(int page, int pageSize,
+        CancellationToken cancellationToken = default)
     {
         return await context.Tracks.AsNoTracking()
             .Include(t => t.TrackArtists)
             .ThenInclude(ta => ta.Artist)
             .Include(t => t.Album)
             .Where(t => t.IsDeleted == true)
+            .OrderBy(t => t.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
@@ -46,9 +54,19 @@ public class TracksRepository(HomeLibDbContext context) : ITrackRepository
     public async Task AddTrackAsync(Track track, TracksArtists tracksArtists,
         CancellationToken cancellationToken = default)
     {
-        context.Tracks.Add(track);
-        context.TracksArtists.Add(tracksArtists);
-        await context.SaveChangesAsync(cancellationToken);
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            await context.Tracks.AddAsync(track, cancellationToken);
+            await context.TracksArtists.AddAsync(tracksArtists, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 
     public async Task DeleteTrackAsync(Guid id, CancellationToken cancellationToken = default)

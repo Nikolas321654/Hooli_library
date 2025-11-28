@@ -8,9 +8,13 @@ namespace HomeLib.Services.Services;
 
 public class PlaylistService(IPlaylistRepository playlistRepository) : IPlaylistService
 {
-    public async Task<List<UserPlaylists>> GetAllPlaylists(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<List<UserPlaylists>> GetAllPlaylists(int page, int pageSize, Guid userId,
+        CancellationToken cancellationToken = default)
     {
-        return await playlistRepository.GetAllPlaylistsAsync(userId, cancellationToken);
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > 100) pageSize = 100;
+        return await playlistRepository.GetAllPlaylistsAsync(page, pageSize, userId, cancellationToken);
     }
 
     public async Task<UserPlaylists> GetPlaylistById(Guid userId, Guid playlistId,

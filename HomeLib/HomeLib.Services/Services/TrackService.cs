@@ -15,9 +15,12 @@ public class TrackService(ITrackRepository trackRepository) : ITrackService
         return track ?? throw new NotFoundException($"Track with {id} not found");
     }
 
-    public async Task<List<Track>> GetAllTracks(CancellationToken cancellationToken = default)
+    public async Task<List<Track>> GetAllTracks(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await trackRepository.GetAllTracksAsync(cancellationToken);
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > 100) pageSize = 100;
+        return await trackRepository.GetAllTracksAsync(page, pageSize, cancellationToken);
     }
 
     public async Task<Track> GetTrackById(Guid id, CancellationToken cancellationToken = default)

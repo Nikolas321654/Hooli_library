@@ -1,5 +1,6 @@
 ﻿using HomeLib.API.DataTypes.DataRequest;
 using HomeLib.API.DataTypes.DataResponse;
+using HomeLib.API.Model.DataRequest;
 using HomeLib.API.Model.DataResponse;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +14,10 @@ namespace HomeLib.API.Artist;
 public class ArtistController(IArtistsService artistService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllArtists(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllArtists([FromBody] PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
     {
-        var artists = await artistService.GetAllArtists(cancellationToken);
+        var artists = await artistService.GetAllArtists(pagination.Page, pagination.PageSize, cancellationToken);
         var artistsResponse = artists.Select(artist => new ArtistResponse()
         {
             ArtistId = artist.Id,
@@ -27,7 +29,7 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     }
 
     [HttpGet("{id:guid}/albums_and_tracks")]
-    public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id, PaginationRequest pagination, CancellationToken cancellationToken = default)
     {
         var artist = await artistService.GetArtistById(id, cancellationToken);
         var artistResponse = new ArtistAlbumsTracksResponse
@@ -35,26 +37,35 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
             ArtistId = artist.Id,
             Name = artist.Name,
             Grammy = artist.Grammy,
-            Albums = artist.Albums.Select(album => new AlbumForArtistResponse()
-            {
-                Name = album.Name,
-                Year = album.Year,
-                AlbumId = album.Id,
-            }).ToList(),
+            Albums = artist.Albums
+                .OrderBy(a => a.Name)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .Select(album => new AlbumForArtistResponse()
+                {
+                    Name = album.Name,
+                    Year = album.Year,
+                    AlbumId = album.Id,
+                }).ToList(),
 
-            Tracks = artist.TrackArtists.Select(track => new TrackForArtistResponse()
-            {
-                TrackId = track.TrackId,
-                Name = track.Track.Name,
-                Duration = track.Track.Duration
-            }).ToList()
+            Tracks = artist.TrackArtists
+                .OrderBy(ta => ta.Track.Name)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .Select(track => new TrackForArtistResponse()
+                {
+                    TrackId = track.TrackId,
+                    Name = track.Track.Name,
+                    Duration = track.Track.Duration
+                }).ToList()
         };
 
         return Ok(artistResponse);
     }
 
     [HttpGet("{id:guid}/albums")]
-    public async Task<IActionResult> GetArtistAlbums(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetArtistAlbums(Guid id, [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
         var artist = await artistService.GetArtistById(id, cancellationToken);
         var artistResponse = new ArtistAlbumsResponse
@@ -62,19 +73,24 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
             ArtistId = artist.Id,
             Name = artist.Name,
             Grammy = artist.Grammy,
-            Albums = artist.Albums.Select(album => new AlbumForArtistResponse()
-            {
-                Name = album.Name,
-                Year = album.Year,
-                AlbumId = album.Id,
-            }).ToList(),
+            Albums = artist.Albums
+                .OrderBy(a => a.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(album => new AlbumForArtistResponse()
+                {
+                    Name = album.Name,
+                    Year = album.Year,
+                    AlbumId = album.Id,
+                }).ToList(),
         };
 
         return Ok(artistResponse);
     }
 
     [HttpGet("{id:guid}/tracks")]
-    public async Task<IActionResult> GetArtistTracks(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetArtistTracks(Guid id, [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
         var artist = await artistService.GetArtistById(id, cancellationToken);
         var artistResponse = new ArtistTracksResponse()
@@ -82,12 +98,16 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
             ArtistId = artist.Id,
             Name = artist.Name,
             Grammy = artist.Grammy,
-            Tracks = artist.TrackArtists.Select(track => new TrackForArtistResponse()
-            {
-                TrackId = track.TrackId,
-                Name = track.Track.Name,
-                Duration = track.Track.Duration
-            }).ToList()
+            Tracks = artist.TrackArtists
+                .OrderBy(ta => ta.Track.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(track => new TrackForArtistResponse()
+                {
+                    TrackId = track.TrackId,
+                    Name = track.Track.Name,
+                    Duration = track.Track.Duration
+                }).ToList()
         };
 
         return Ok(artistResponse);

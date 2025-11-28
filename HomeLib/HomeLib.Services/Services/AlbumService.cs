@@ -21,9 +21,12 @@ public class AlbumService(IAlbumRepository albumRepository) : IAlbumService
         return album ?? throw new NotFoundException($"Album with {id} id not found");
     }
 
-    public async Task<List<Album>> GetAllAlbums(CancellationToken cancellationToken = default)
+    public async Task<List<Album>> GetAllAlbums(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await albumRepository.GetAllAlbumsAsync(cancellationToken);
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > 100) pageSize = 100;
+        return await albumRepository.GetAllAlbumsAsync(page, pageSize, cancellationToken);
     }
 
     public async Task HardDeleteAlbum(Guid id, CancellationToken cancellationToken = default)

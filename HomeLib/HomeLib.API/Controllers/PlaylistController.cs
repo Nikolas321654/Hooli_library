@@ -20,9 +20,11 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllPlaylist(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllPlaylist([FromBody] PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
     {
-        var playlists = await playlistService.GetAllPlaylists(GetUserId(), cancellationToken);
+        var playlists =
+            await playlistService.GetAllPlaylists(pagination.Page, pagination.PageSize, GetUserId(), cancellationToken);
 
         var playlistsResponse = playlists.Select(p => new PlaylistResponse
         {

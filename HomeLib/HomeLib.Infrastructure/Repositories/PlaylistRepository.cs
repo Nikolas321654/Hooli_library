@@ -7,11 +7,14 @@ namespace HomeLib.Infrastructure.Repositories;
 
 public class PlaylistRepository(HomeLibDbContext context) : IPlaylistRepository
 {
-    public async Task<List<UserPlaylists>> GetAllPlaylistsAsync(Guid userId,
+    public async Task<List<UserPlaylists>> GetAllPlaylistsAsync(int page, int pageSize, Guid userId,
         CancellationToken cancellationToken = default)
     {
         return await context.UserPlaylists.AsNoTracking()
             .Where(x => x.UserId == userId)
+            .OrderBy(x => x.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 

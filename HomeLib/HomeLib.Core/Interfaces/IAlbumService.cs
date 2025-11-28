@@ -5,7 +5,7 @@ namespace HomeLib.Core.Interfaces;
 public interface IAlbumService
 {
     public Task<Album> GetAlbumById(Guid albumId, CancellationToken cancellationToken);
-    public Task<List<Album>> GetAllAlbums(CancellationToken cancellationToken);
+    public Task<List<Album>> GetAllAlbums(int page, int pageSize, CancellationToken cancellationToken);
     public Task HardDeleteAlbum(Guid albumId, CancellationToken cancellationToken);
     public Task SoftDeleteAlbum(Guid albumId, CancellationToken cancellationToken);
     public Task<Guid> AddAlbum(string name, int year, Guid artistId, CancellationToken cancellationToken);

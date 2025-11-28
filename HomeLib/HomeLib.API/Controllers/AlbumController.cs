@@ -12,9 +12,11 @@ namespace HomeLib.API.Album;
 public class AlbumController(IAlbumService albumService) : ControllerBase
 {
     [HttpGet("tracks")]
-    public async Task<IActionResult> GetAllAlbumsWithTracks(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllAlbumsWithTracks([FromBody] PaginationRequest pagination,
+        CancellationToken cancellationToken = default
+    )
     {
-        var albumsList = await albumService.GetAllAlbums(cancellationToken);
+        var albumsList = await albumService.GetAllAlbums(pagination.Page, pagination.PageSize, cancellationToken);
         var albumsResponse = albumsList.Select(album => new AlbumResponse
         {
             AlbumId = album.Id,
@@ -32,9 +34,10 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAlbums(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllAlbums([FromBody] PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
     {
-        var albumsList = await albumService.GetAllAlbums(cancellationToken);
+        var albumsList = await albumService.GetAllAlbums(pagination.Page, pagination.PageSize, cancellationToken);
         var albumsResponse = albumsList.Select(album => new AlbumResponse
         {
             AlbumId = album.Id,
