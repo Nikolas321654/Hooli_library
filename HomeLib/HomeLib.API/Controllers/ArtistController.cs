@@ -2,6 +2,9 @@
 using HomeLib.API.DataTypes.DataResponse;
 using HomeLib.API.Model.DataRequest;
 using HomeLib.API.Model.DataResponse;
+using HomeLib.Core.Application.Artists.Commands;
+using HomeLib.Core.Application.Artists.Handlers;
+using HomeLib.Core.Application.Artists.Queries;
 using HomeLib.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +14,28 @@ namespace HomeLib.API.Artist;
 [Authorize]
 [ApiController]
 [Route("api/artist")]
-public class ArtistController(IArtistsService artistService) : ControllerBase
+public class ArtistController(
+    GetAllArtistsQueryHandler getAllArtistsQueryHandler,
+    GetArtistByIdQueryHandler getArtistByIdQueryHandler,
+    GetArtistAlbumsQueryHandler getArtistAlbumsQueryHandler,
+    GetArtistTracksQueryHandler getArtistTracksQueryHandler,
+    GetArtistWithAlbumsTracksQueryHandler getArtistWithAlbumsTracksQueryHandler,
+    AddArtistCommandHandler addArtistCommandHandler,
+    UpdateArtistCommandHandler updateArtistCommandHandler,
+    SoftDeleteArtistCommandHandler softDeleteArtistCommandHandler,
+    HardDeleteArtistCommandHandler hardDeleteArtistCommandHandler
+) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllArtists([FromBody] PaginationRequest pagination,
         CancellationToken cancellationToken = default)
     {
-        var artists = await artistService.GetAllArtists(pagination.Page, pagination.PageSize, cancellationToken);
+        var query = new GetAllArtistsQuery(pagination.Page, pagination.PageSize);
+        var artists = await getAllArtistsQueryHandler.Handle(query, cancellationToken);
+        
         var artistsResponse = artists.Select(artist => new ArtistResponse()
         {
-            ArtistId = artist.Id,
+            ArtistId = artist.ArtistId,
             Name = artist.Name,
             Grammy = artist.Grammy,
         });
@@ -31,32 +46,28 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     [HttpGet("{id:guid}/albums_and_tracks")]
     public async Task<IActionResult> GetArtistWithAlbumsTracksById(Guid id, PaginationRequest pagination, CancellationToken cancellationToken = default)
     {
-        var artist = await artistService.GetArtistById(id, cancellationToken);
+        var query = new GetArtistWithAlbumsTracksQuery(id, pagination.Page, pagination.PageSize);
+        var artist = await getArtistWithAlbumsTracksQueryHandler.Handle(query, cancellationToken);
+        
         var artistResponse = new ArtistAlbumsTracksResponse
         {
-            ArtistId = artist.Id,
+            ArtistId = artist.ArtistId,
             Name = artist.Name,
             Grammy = artist.Grammy,
             Albums = artist.Albums
-                .OrderBy(a => a.Name)
-                .Skip((pagination.Page - 1) * pagination.PageSize)
-                .Take(pagination.PageSize)
                 .Select(album => new AlbumForArtistResponse()
                 {
                     Name = album.Name,
                     Year = album.Year,
-                    AlbumId = album.Id,
+                    AlbumId = album.AlbumId,
                 }).ToList(),
 
-            Tracks = artist.TrackArtists
-                .OrderBy(ta => ta.Track.Name)
-                .Skip((pagination.Page - 1) * pagination.PageSize)
-                .Take(pagination.PageSize)
+            Tracks = artist.Tracks
                 .Select(track => new TrackForArtistResponse()
                 {
                     TrackId = track.TrackId,
-                    Name = track.Track.Name,
-                    Duration = track.Track.Duration
+                    Name = track.Name,
+                    Duration = track.Duration
                 }).ToList()
         };
 
@@ -67,21 +78,20 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     public async Task<IActionResult> GetArtistAlbums(Guid id, [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
-        var artist = await artistService.GetArtistById(id, cancellationToken);
+        var query = new GetArtistAlbumsQuery(id, page, pageSize);
+        var artist = await getArtistAlbumsQueryHandler.Handle(query, cancellationToken);
+        
         var artistResponse = new ArtistAlbumsResponse
         {
-            ArtistId = artist.Id,
+            ArtistId = artist.ArtistId,
             Name = artist.Name,
             Grammy = artist.Grammy,
             Albums = artist.Albums
-                .OrderBy(a => a.Name)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
                 .Select(album => new AlbumForArtistResponse()
                 {
                     Name = album.Name,
                     Year = album.Year,
-                    AlbumId = album.Id,
+                    AlbumId = album.AlbumId,
                 }).ToList(),
         };
 
@@ -92,21 +102,20 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     public async Task<IActionResult> GetArtistTracks(Guid id, [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
-        var artist = await artistService.GetArtistById(id, cancellationToken);
+        var query = new GetArtistTracksQuery(id, page, pageSize);
+        var artist = await getArtistTracksQueryHandler.Handle(query, cancellationToken);
+        
         var artistResponse = new ArtistTracksResponse()
         {
-            ArtistId = artist.Id,
+            ArtistId = artist.ArtistId,
             Name = artist.Name,
             Grammy = artist.Grammy,
-            Tracks = artist.TrackArtists
-                .OrderBy(ta => ta.Track.Name)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+            Tracks = artist.Tracks
                 .Select(track => new TrackForArtistResponse()
                 {
                     TrackId = track.TrackId,
-                    Name = track.Track.Name,
-                    Duration = track.Track.Duration
+                    Name = track.Name,
+                    Duration = track.Duration
                 }).ToList()
         };
 
@@ -117,22 +126,25 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     public async Task<ActionResult> AddArtist(CancellationToken cancellationToken,
         [FromBody] ArtistRequest artistRequest)
     {
-        await artistService.AddArtist(artistRequest.Name, artistRequest.Grammy, cancellationToken);
-        return Created("api/artist", artistRequest);
+        var command = new AddArtistCommand(artistRequest.Name, artistRequest.Grammy);
+        var id = await addArtistCommandHandler.Handle(command, cancellationToken);
+        return Created("api/artist", new { id, artistRequest.Name, artistRequest.Grammy });
     }
 
     // Carefully    
     [HttpDelete("{id:guid}/hard_delete")]
     public async Task<ActionResult> HardDeleteArtist(Guid id, CancellationToken cancellationToken)
     {
-        await artistService.HardDeleteArtist(id, cancellationToken);
+        var command = new HardDeleteArtistCommand(id);
+        await hardDeleteArtistCommandHandler.Handle(command, cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> SoftDeleteArtist(Guid id, CancellationToken cancellationToken)
     {
-        await artistService.SoftDeleteArtist(id, cancellationToken);
+        var command = new SoftDeleteArtistCommand(id);
+        await softDeleteArtistCommandHandler.Handle(command, cancellationToken);
         return NoContent();
     }
 
@@ -140,7 +152,8 @@ public class ArtistController(IArtistsService artistService) : ControllerBase
     public async Task<ActionResult> UpdateArtist(Guid id, CancellationToken cancellationToken,
         [FromBody] ArtistRequest artistRequest)
     {
-        await artistService.UpdateArtist(artistRequest.Name, artistRequest.Grammy, id, cancellationToken);
+        var command = new UpdateArtistCommand(id, artistRequest.Name, artistRequest.Grammy);
+        await updateArtistCommandHandler.Handle(command, cancellationToken);
         return NoContent();
     }
 }

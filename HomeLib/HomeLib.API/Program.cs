@@ -8,6 +8,7 @@ using HomeLib.Infrastructure;
 using HomeLib.Infrastructure.Repositories;
 using HomeLib.Services;
 using HomeLib.Services.Services;
+using HomeLib.Core.Application.Artists.Handlers;
 using Microsoft.AspNetCore.Http.Json;
 
 
@@ -25,6 +26,17 @@ builder.Services.AddScoped<ITrackRepository, TracksRepository>();
 
 builder.Services.AddScoped<IArtistRepository, ArtistsRepository>();
 builder.Services.AddScoped<IArtistsService, ArtistService>();
+
+// Handlers for Artist
+builder.Services.AddScoped<AddArtistCommandHandler>();
+builder.Services.AddScoped<UpdateArtistCommandHandler>();
+builder.Services.AddScoped<SoftDeleteArtistCommandHandler>();
+builder.Services.AddScoped<HardDeleteArtistCommandHandler>();
+builder.Services.AddScoped<GetAllArtistsQueryHandler>();
+builder.Services.AddScoped<GetArtistByIdQueryHandler>();
+builder.Services.AddScoped<GetArtistAlbumsQueryHandler>();
+builder.Services.AddScoped<GetArtistTracksQueryHandler>();
+builder.Services.AddScoped<GetArtistWithAlbumsTracksQueryHandler>();
 
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
