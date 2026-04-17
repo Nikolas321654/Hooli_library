@@ -11,13 +11,13 @@ variables:
 test_job:
   stage: stage_test
   services:
-    - docker:20.10.12-dind
+    - docker:24.0.5-dind
   script: 
     - apt-get update && apt-get install -y docker-compose
     - echo "tests started"
     - echo "start docker container"
-    - docker compose up db -d
+    - docker-compose up db -d
     - dotnet test
   after_script: 
     - echo "tests finished"
-    - docker compose down
+    - docker-compose down
